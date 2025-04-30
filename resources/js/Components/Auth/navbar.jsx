@@ -1,7 +1,10 @@
-import { Link } from '@inertiajs/react'
+import { Link, usePage } from '@inertiajs/react'
 import React from 'react'
 
 export default function navbar() {
+
+    const { auth } = usePage().props;
+
     return (
         <>
 
@@ -22,18 +25,36 @@ export default function navbar() {
                             <div className="collapse navbar-collapse" id="navigation">
                                 <ul className="navbar-nav mx-auto me-xl-auto me-xl-7">
 
-                                    <li className="nav-item">
-                                        <Link className={route().current("login") ? "nav-link me-2 text-gradient text-dark fw-bold border-bottom border-dark border-3" : "nav-link me-2"} href={route("login")}>
-                                            <i className="fas fa-user-circle opacity-6 text-dark me-1"></i>
-                                            Login
-                                        </Link>
-                                    </li>
-                                    <li className="nav-item">
-                                        <Link className={route().current("register") ? "nav-link me-2 text-gradient text-dark fw-bold border-bottom border-dark border-3" : "nav-link me-2"} href={route("register")}>
-                                            <i className="fas fa-key opacity-6 text-dark me-1"></i>
-                                            Register
-                                        </Link>
-                                    </li>
+                                    {
+
+                                        auth.user ?
+                                            (<li className="nav-item">
+                                                <Link className="nav-link me-2" href={route("login")}>
+                                                    <i className="fas fa-user-circle opacity-6 text-dark me-1"></i>
+                                                    Dashboard
+                                                </Link>
+                                            </li>)
+                                            :
+                                            (
+                                                <>
+                                                    <li className="nav-item">
+                                                        <Link className={route().current("login") ? "nav-link me-2 text-gradient text-dark fw-bold border-bottom border-dark border-3" : "nav-link me-2"} href={route("login")}>
+                                                            <i className="fas fa-user-circle opacity-6 text-dark me-1"></i>
+                                                            Login
+                                                        </Link>
+                                                    </li>
+
+                                                    <li className="nav-item">
+                                                        <Link className={route().current("register") ? "nav-link me-2 text-gradient text-dark fw-bold border-bottom border-dark border-3" : "nav-link me-2"} href={route("register")}>
+                                                            <i className="fas fa-key opacity-6 text-dark me-1"></i>
+                                                            Register
+                                                        </Link>
+                                                    </li>
+                                                </>
+                                            )
+
+                                    }
+
                                 </ul>
 
                             </div>

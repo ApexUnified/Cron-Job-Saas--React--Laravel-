@@ -1,4 +1,4 @@
-import ApplicationLogo from '@/Components/ApplicationLogo';
+
 import { Link, usePage } from '@inertiajs/react';
 import AuthFooter from "@/Components/Auth/footer";
 import AuthNavbar from "@/Components/Auth/navbar";

@@ -1,4 +1,5 @@
 
+import AuthImage from '@/Components/Auth/authImage';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, useForm } from '@inertiajs/react';
 
@@ -43,6 +44,7 @@ export default function ResetPassword({ token, email }) {
                                                     id='email'
                                                     onChange={(e) => setData("email", e.target.value)}
                                                     value={data.email}
+                                                    autoComplete='current-email'
                                                 />
                                                 <span className="text-danger fw-bold">{errors.email}</span>
                                             </div>
@@ -55,6 +57,7 @@ export default function ResetPassword({ token, email }) {
                                                     id='password'
                                                     onChange={(e) => setData("password", e.target.value)}
                                                     value={data.password}
+                                                    autoComplete='new-password'
                                                 />
                                                 <span className="text-danger fw-bold">{errors.password}</span>
                                             </div>
@@ -69,13 +72,17 @@ export default function ResetPassword({ token, email }) {
                                                     id='password_confirmation'
                                                     onChange={(e) => setData("password_confirmation", e.target.value)}
                                                     value={data.password_confirmation}
+                                                    autoComplete='new-password'
 
                                                 />
                                                 <span className="text-danger fw-bold">{errors.password_confirmation}</span>
                                             </div>
 
                                             <div className="text-center">
-                                                <button type="submit" className="btn bg-gradient-dark w-100 my-4 mb-2" disabled={processing}>Reset Password</button>
+                                                <button type='submit' className="btn bg-gradient-dark w-100 mt-4 mb-0 d-flex justify-content-center  align-items-center" disabled={processing}>
+                                                    {processing ? <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> : ""}
+                                                    Reset Password
+                                                </button>
                                             </div>
 
                                         </form>
@@ -85,7 +92,7 @@ export default function ResetPassword({ token, email }) {
                             </div>
                             <div className="col-md-6">
                                 <div className="oblique position-absolute top-0 h-100 d-md-block d-none me-n8">
-                                    <div className="oblique-image bg-cover position-absolute fixed-top ms-auto h-100 z-index-0 ms-n6" style={{ backgroundImage: "url('../assets/img/curved-images/curved6.jpg')" }}></div>
+                                    <AuthImage />
                                 </div>
                             </div>
                         </div>

@@ -1,5 +1,6 @@
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
+import AuthImage from "@/Components/Auth/AuthImage";
 
 export default function Login({ status, canResetPassword }) {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -15,6 +16,8 @@ export default function Login({ status, canResetPassword }) {
             onFinish: () => reset('password'),
         });
     };
+
+
 
     return (
         <GuestLayout>
@@ -40,6 +43,7 @@ export default function Login({ status, canResetPassword }) {
                                                     name='email'
                                                     id='email'
                                                     onChange={(e) => setData('email', e.target.value)}
+                                                    autoComplete='current-email'
                                                 />
 
                                                 <span className="text-danger fw-bold">{errors.email}</span>
@@ -51,6 +55,7 @@ export default function Login({ status, canResetPassword }) {
                                                     placeholder="Password"
                                                     name="password"
                                                     id='password'
+                                                    autoComplete='current-password'
                                                     onChange={(e) => setData('password', e.target.value)}
                                                 />
 
@@ -65,8 +70,15 @@ export default function Login({ status, canResetPassword }) {
                                                 />
                                                 <label className="form-check-label" htmlFor="rememberMe">Remember me</label>
                                             </div>
+
+
                                             <div className="text-center">
-                                                <button type="submit" className="btn bg-gradient-dark w-100 mt-4 mb-0" disabled={processing}>Login</button>
+
+                                                <button type='submit' className="btn bg-gradient-dark w-100 mt-4 mb-0 d-flex justify-content-center  align-items-center" disabled={processing}>
+                                                    {processing ? <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> : ""}
+                                                    Login
+                                                </button>
+
                                             </div>
                                         </form>
                                     </div>
@@ -85,7 +97,7 @@ export default function Login({ status, canResetPassword }) {
                             </div>
                             <div className="col-md-6">
                                 <div className="oblique position-absolute top-0 h-100 d-md-block d-none me-n8">
-                                    <div className="oblique-image bg-cover position-absolute fixed-top ms-auto h-100 z-index-0 ms-n6" style={{ backgroundImage: "url('../assets/img/curved-images/curved6.jpg')" }}></div>
+                                    <AuthImage />
                                 </div>
                             </div>
                         </div>

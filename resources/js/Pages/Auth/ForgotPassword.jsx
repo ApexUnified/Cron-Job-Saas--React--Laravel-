@@ -1,4 +1,5 @@
 
+import AuthImage from '@/Components/Auth/authImage';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 
@@ -38,6 +39,7 @@ export default function ForgotPassword({ status }) {
                                                     name='email'
                                                     id='email'
                                                     onChange={(e) => setData('email', e.target.value)}
+                                                    autoComplete='current-email'
                                                 />
 
                                                 <span className="text-danger fw-bold">{errors.email}</span>
@@ -45,7 +47,10 @@ export default function ForgotPassword({ status }) {
 
 
                                             <div className="text-center">
-                                                <button type="submit" className="btn bg-gradient-dark w-100 mt-4 mb-0" disabled={processing}>Get Link</button>
+                                                <button type='submit' className="btn bg-gradient-dark w-100 mt-4 mb-0 d-flex justify-content-center  align-items-center" disabled={processing}>
+                                                    {processing ? <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> : ""}
+                                                    Get Link
+                                                </button>
                                             </div>
                                         </form>
                                     </div>
@@ -54,7 +59,7 @@ export default function ForgotPassword({ status }) {
                             </div>
                             <div className="col-md-6">
                                 <div className="oblique position-absolute top-0 h-100 d-md-block d-none me-n8">
-                                    <div className="oblique-image bg-cover position-absolute fixed-top ms-auto h-100 z-index-0 ms-n6" style={{ backgroundImage: "url('../assets/img/curved-images/curved6.jpg')" }}></div>
+                                    <AuthImage />
                                 </div>
                             </div>
                         </div>
