@@ -1,0 +1,67 @@
+
+import GuestLayout from '@/Layouts/GuestLayout';
+import { Head, Link, useForm } from '@inertiajs/react';
+
+export default function ForgotPassword({ status }) {
+    const { data, setData, post, processing, errors } = useForm({
+        email: '',
+    });
+
+
+    const submit = (e) => {
+        e.preventDefault();
+
+        post(route('password.email'));
+    };
+
+
+    return (
+        <GuestLayout>
+            <Head title="Forgot Password" />
+            <section>
+                <div className="page-header min-vh-75">
+                    <div className="container">
+                        <div className="row">
+                            <div className="col-xl-4 col-lg-5 col-md-6 d-flex flex-column mx-auto">
+                                <div className="card card-plain mt-8">
+                                    <div className="card-header pb-0 text-left bg-transparent">
+                                        <h3 className="font-weight-bolder text-dark text-gradient">Dont Worry We'have Covered You Up</h3>
+                                        <p className="mb-0 ">Enter Your Email To Receive Password Reset Link</p>
+                                    </div>
+                                    <div className="card-body">
+                                        <form onSubmit={submit} >
+                                            <label htmlFor='email'>Email</label>
+                                            <div className="mb-3">
+                                                <input type="email"
+                                                    className="form-control"
+                                                    placeholder="Email Address"
+                                                    name='email'
+                                                    id='email'
+                                                    onChange={(e) => setData('email', e.target.value)}
+                                                />
+
+                                                <span className="text-danger fw-bold">{errors.email}</span>
+                                            </div>
+
+
+                                            <div className="text-center">
+                                                <button type="submit" className="btn bg-gradient-dark w-100 mt-4 mb-0" disabled={processing}>Get Link</button>
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div className="col-md-6">
+                                <div className="oblique position-absolute top-0 h-100 d-md-block d-none me-n8">
+                                    <div className="oblique-image bg-cover position-absolute fixed-top ms-auto h-100 z-index-0 ms-n6" style={{ backgroundImage: "url('../assets/img/curved-images/curved6.jpg')" }}></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </GuestLayout>
+    );
+}
