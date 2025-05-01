@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
-import PartialDashboard from '@/Components/Main/Partials/PartialDashboard';
+import PartialDashboard from '@/Components/Main/Partials/Dashboard/PartialDashboard';
 
 export default function Dashboard() {
     return (

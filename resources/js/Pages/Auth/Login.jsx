@@ -37,6 +37,8 @@ export default function Login({ status, canResetPassword }) {
                                         <form onSubmit={submit} >
                                             <div className="mb-3">
                                                 <label htmlFor='email'>Email</label>
+
+
                                                 <input type="email"
                                                     className="form-control"
                                                     placeholder="Email Address"
@@ -45,6 +47,7 @@ export default function Login({ status, canResetPassword }) {
                                                     onChange={(e) => setData('email', e.target.value)}
                                                     autoComplete='current-email'
                                                 />
+
 
                                                 <span className="text-danger fw-bold">{errors.email}</span>
                                             </div>

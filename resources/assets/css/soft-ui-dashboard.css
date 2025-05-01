@@ -2848,17 +2848,24 @@ progress {
 .form-control {
   display: block;
   width: 100%;
-  padding: 0.5rem 0.75rem;
+  padding: 0.3rem 0.50rem;
   font-size: 0.875rem;
   font-weight: 400;
   line-height: 1.4rem;
   color: #3f3f46;
   appearance: none;
-  background-color: #fff;
   background-clip: padding-box;
-  border: 1px solid #d2d6da;
-  border-radius: 0.5rem;
+  border: none;
+  border-bottom: 0.7px solid #000000;
+  border-radius: 0 !important;
   transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+input.form-control {
+  border-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  background-color: none !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2877,10 +2884,9 @@ progress {
 
 .form-control:focus {
   color: #3f3f46;
-  background-color: #fff;
-  border-color: #a1a1aa;
+  border: none;
+  border-bottom: 1px solid #a7a7a8;
   outline: 0;
-  box-shadow: 0 0 0 1px #a1a1aa;
 }
 
 .form-control::-webkit-date-and-time-value {
@@ -2955,7 +2961,7 @@ progress {
   min-height: unset;
   padding: 0.25rem 0.75rem;
   font-size: 0.75rem;
-  border-radius: 0.5rem;
+  border-radius: 0;
 }
 
 .form-control-sm::file-selector-button {
@@ -2968,7 +2974,7 @@ progress {
   min-height: unset;
   padding: 0.75rem 0.75rem;
   font-size: 0.875rem;
-  border-radius: 0.5rem;
+  border-radius: 0;
 }
 
 .form-control-lg::file-selector-button {
@@ -3001,12 +3007,12 @@ textarea.form-control-lg {
 
 .form-control-color::-moz-color-swatch {
   border: 0 !important;
-  border-radius: 0.5rem;
+  border-radius: 0;
 }
 
 .form-control-color::-webkit-color-swatch {
   border: 0 !important;
-  border-radius: 0.5rem;
+  border-radius: 0;
 }
 
 .form-control-color.form-control-sm {
@@ -3422,7 +3428,7 @@ textarea.form-control-lg {
   height: 1.5em;
   content: "";
   background-color: #fff;
-  border-radius: 0.5rem;
+  border-radius: 0;
 }
 
 .form-floating>.form-control:-webkit-autofill~label {
@@ -3497,7 +3503,7 @@ textarea.form-control-lg {
 .input-group-lg>.btn {
   padding: 0.75rem 0.75rem;
   font-size: 0.875rem;
-  border-radius: 0.5rem;
+  border-radius: 0;
 }
 
 .input-group-sm>.form-control,
@@ -3506,7 +3512,7 @@ textarea.form-control-lg {
 .input-group-sm>.btn {
   padding: 0.25rem 0.75rem;
   font-size: 0.75rem;
-  border-radius: 0.5rem;
+  border-radius: 0;
 }
 
 .input-group-lg>.form-select,
@@ -27947,4 +27953,119 @@ pre[className*=language-] {
   }
 }
 
-/*# sourceMappingURL=dashboard-free.css.map */
+
+/* Custom Checkbox */
+.checkbox-container {
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 8px;
+}
+
+.ios-checkbox {
+  --checkbox-size: 25px;
+  --checkbox-color: #222;
+  --checkbox-bg: #222;
+  --checkbox-border: #222;
+
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ios-checkbox input {
+  display: none;
+}
+
+.checkbox-wrapper {
+  position: relative;
+  width: var(--checkbox-size);
+  height: var(--checkbox-size);
+  border-radius: 8px;
+  transition: transform 0.2s ease;
+}
+
+.checkbox-bg {
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  border: 2px solid var(--checkbox-border);
+  background: white;
+  transition: all 0.2s ease;
+}
+
+.checkbox-icon {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 80%;
+  height: 80%;
+  color: white;
+  transform: scale(0);
+  transition: all 0.2s ease;
+}
+
+.check-path {
+  stroke-dasharray: 40;
+  stroke-dashoffset: 40;
+  transition: stroke-dashoffset 0.3s ease 0.1s;
+}
+
+/* Checked State */
+.ios-checkbox input:checked+.checkbox-wrapper .checkbox-bg {
+  background: var(--checkbox-color);
+  border-color: var(--checkbox-color);
+}
+
+.ios-checkbox input:checked+.checkbox-wrapper .checkbox-icon {
+  transform: scale(1);
+}
+
+.ios-checkbox input:checked+.checkbox-wrapper .check-path {
+  stroke-dashoffset: 0;
+}
+
+/* Hover Effects */
+.ios-checkbox:hover .checkbox-wrapper {
+  transform: scale(1.05);
+}
+
+/* Active Animation */
+.ios-checkbox:active .checkbox-wrapper {
+  transform: scale(0.95);
+}
+
+/* Focus Styles */
+.ios-checkbox input:focus+.checkbox-wrapper .checkbox-bg {
+  box-shadow: 0 0 0 4px var(--checkbox-bg);
+}
+
+.ios-checkbox.dark {
+  --checkbox-color: #222;
+  --checkbox-bg: #222;
+  --checkbox-border: #222;
+}
+
+/* Animation */
+@keyframes bounce {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.ios-checkbox input:checked+.checkbox-wrapper {
+  animation: bounce 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.no-pointer {
+  pointer-events: none;
+  opacity: 0.1;
+  cursor: not-allowed;
+}

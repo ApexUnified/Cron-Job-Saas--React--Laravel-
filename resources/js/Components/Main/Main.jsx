@@ -1,11 +1,33 @@
 import { Link, useForm } from '@inertiajs/react'
 import React from 'react'
-
+import notificationIcon1 from "../../../assets/img/team-2.jpg";
+import notificationIcon2 from "../../../assets/img/team-3.jpg";
 export default function Main({ children, header }) {
     const { post, processing } = useForm({});
     const logout = () => {
         post(route('logout'));
     }
+
+    const iconNavbarSidenav = () => {
+        const sidenav = document.getElementById('sidenav-main');
+        const body = document.body;
+        const isPinned = body.classList.contains('g-sidenav-pinned');
+
+        if (isPinned) {
+            body.classList.remove('g-sidenav-pinned');
+            if (sidenav) {
+                sidenav.classList.remove('bg-white');
+                sidenav.classList.add('bg-transparent');
+            }
+        } else {
+            body.classList.add('g-sidenav-pinned');
+            if (sidenav) {
+                sidenav.classList.add('bg-white');
+                sidenav.classList.remove('bg-transparent');
+            }
+        }
+    };
+
 
 
 
@@ -37,7 +59,7 @@ export default function Main({ children, header }) {
                                     </button>
                                 </li>
                                 <li className="nav-item d-xl-none ps-3 d-flex align-items-center">
-                                    <a href="#" className="nav-link text-body p-0" id="iconNavbarSidenav">
+                                    <a href="#" className="nav-link text-body p-0" onClick={iconNavbarSidenav}>
                                         <div className="sidenav-toggler-inner">
                                             <i className="sidenav-toggler-line"></i>
                                             <i className="sidenav-toggler-line"></i>
@@ -59,7 +81,7 @@ export default function Main({ children, header }) {
                                             <a className="dropdown-item border-radius-md" href="#">
                                                 <div className="d-flex py-1">
                                                     <div className="my-auto">
-                                                        <img src="../assets/img/team-2.jpg" className="avatar avatar-sm  me-3 " />
+                                                        <img src={notificationIcon2} className="avatar avatar-sm  me-3 " />
                                                     </div>
                                                     <div className="d-flex flex-column justify-content-center">
                                                         <h6 className="text-sm font-weight-normal mb-1">
@@ -77,7 +99,7 @@ export default function Main({ children, header }) {
                                             <a className="dropdown-item border-radius-md" href="#">
                                                 <div className="d-flex py-1">
                                                     <div className="my-auto">
-                                                        <img src="../assets/img/small-logos/logo-spotify.svg" className="avatar avatar-sm bg-gradient-dark  me-3 " />
+                                                        <img src={notificationIcon1} className="avatar avatar-sm bg-gradient-dark  me-3 " />
                                                     </div>
                                                     <div className="d-flex flex-column justify-content-center">
                                                         <h6 className="text-sm font-weight-normal mb-1">

@@ -3,6 +3,7 @@ import { Link, usePage } from '@inertiajs/react';
 import Sidebar from "@/Components/Main/Sidebar";
 import Main from "@/Components/Main/Main";
 import { useState } from 'react';
+import { ToastContainer } from 'react-toastify';
 
 export default function AuthenticatedLayout({ header, children }) {
     const user = usePage().props.auth.user;
@@ -12,6 +13,7 @@ export default function AuthenticatedLayout({ header, children }) {
 
     return (
         <>
+            <ToastContainer />
             <Sidebar />
             <Main
                 children={children}

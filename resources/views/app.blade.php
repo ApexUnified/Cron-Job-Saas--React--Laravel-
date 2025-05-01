@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
@@ -11,22 +12,8 @@
         @vite(['resources/js/app.jsx', "resources/js/Pages/{$page['component']}.jsx"])
         @inertiaHead
     </head>
-    <body class="font-sans antialiased {{ auth()->user() ? "g-sidenav-show  bg-gray-100" : "" }}">
+    <body class="font-sans antialiased g-sidenav-show  bg-gray-100">
         @inertia
     </body>
 
-
-      @vite(["resources/assets/js/plugins/perfect-scrollbar.min.js"])
-      @vite(["resources/assets/js/plugins/smooth-scrollbar.min.js"])
-
-
-       <script>
-            var win = navigator.platform.indexOf('Win') > -1;
-            if (win && document.querySelector('#sidenav-scrollbar')) {
-                var options = {
-                    damping: '0.5'
-                }
-                Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
-            }
-       </script>
 </html>

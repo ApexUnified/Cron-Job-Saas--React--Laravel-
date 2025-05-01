@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CronJobController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -7,13 +8,19 @@ use Inertia\Inertia;
 
 Route::redirect("/", "/dashboard");
 Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
+    return Inertia::render('Dashboard/Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+// Main Routes
+
+
+Route::middleware(["auth", "verified"])->group(function () {
+
+    // Cron Job Routes
+    Route::resource("/cron-jobs", CronJobController::class);
+    Route::delete("cron-job/deletebyselection", [CronJobController::class, "deleteBySelection"])->name("cron-job.deletebyselection");
 });
+
 
 require __DIR__ . '/auth.php';
