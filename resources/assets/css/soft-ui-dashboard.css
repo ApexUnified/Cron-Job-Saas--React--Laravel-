@@ -2855,6 +2855,7 @@ progress {
   color: #3f3f46;
   appearance: none;
   background-clip: padding-box;
+  background-color: transparent !important;
   border: none;
   border-bottom: 0.7px solid #000000;
   border-radius: 0 !important;
@@ -2865,7 +2866,7 @@ input.form-control {
   border-radius: 0 !important;
   border-top-right-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
-  background-color: none !important;
+  background-color: transparent !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

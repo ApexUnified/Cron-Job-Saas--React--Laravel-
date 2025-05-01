@@ -69,7 +69,7 @@ export default function PartialIndex({ heading }) {
             <div className="d-flex justify-content-between flex-wrap">
                 <h3>{heading}</h3>
                 <Link href={route('cron-jobs.create')} className="btn btn-dark ">
-                    <i class="bi bi-plus-square mx-1"></i>
+                    <i className="bi bi-plus-square mx-1"></i>
                     Create Cron Job
                 </Link>
             </div>

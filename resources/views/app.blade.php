@@ -7,6 +7,8 @@
 
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
+        {{-- @vite("resources/assets/css/soft-ui-dashboard.css") --}}
+
         @routes
         @viteReactRefresh
         @vite(['resources/js/app.jsx', "resources/js/Pages/{$page['component']}.jsx"])
