@@ -29,7 +29,7 @@ export default function navbar() {
 
                                         auth.user ?
                                             (<li className="nav-item">
-                                                <Link className="nav-link me-2" href={route("login")}>
+                                                <Link className="nav-link me-2" href={route("dashboard")}>
                                                     <i className="fas fa-user-circle opacity-6 text-dark me-1"></i>
                                                     Dashboard
                                                 </Link>

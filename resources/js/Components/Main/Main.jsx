@@ -13,14 +13,9 @@ export default function Main({ children, header }) {
         <>
             <main className="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
 
-
                 <nav className="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" navbar-scroll="true">
                     <div className="container-fluid py-1 px-3">
-                        <nav aria-label="breadcrumb">
-                            <ol className="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-                                <li className="breadcrumb-item text-sm"><a className="opacity-5 text-dark" href="#">Pages</a></li>
-                                <li className="breadcrumb-item text-sm text-dark active" aria-current="page">Dashboard</li>
-                            </ol>
+                        <nav aria-label="breadcrumb" className='mt-3'>
                             {header}
                         </nav>
                         <div className="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
@@ -137,7 +132,7 @@ export default function Main({ children, header }) {
 
                 <div className="container-fluid py-4">
                     {children}
-                    <footer className="footer pt-3  ">
+                    <footer className="footer pt-3 mt-5  ">
                         <div className="container-fluid">
                             <div className="row align-items-center justify-content-lg-between">
                                 <div className="col-lg-6 mb-lg-0 mb-4">

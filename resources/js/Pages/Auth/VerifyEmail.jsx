@@ -1,4 +1,5 @@
 import AuthImage from '@/Components/Auth/authImage';
+import SpinnerButton from '@/Components/Main/MainComponents/SpinnerButton';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 
@@ -33,10 +34,12 @@ export default function VerifyEmail({ status }) {
                                     <div className="card-body">
                                         <form onSubmit={submit} >
                                             <div className="mb-3">
-                                                <button type='submit' className="btn btn-dark text-gradient-dark d-flex  align-items-center" disabled={processing}>
-                                                    {processing ? <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> : ""}
-                                                    Send Verification Link
-                                                </button>
+                                                <SpinnerButton
+                                                    CssClass={"btn-dark w-100 mb-0 mt-2 text-center"}
+                                                    ButtonText={"Verify Email"}
+                                                    processing={processing}
+                                                    Type={"submit"}
+                                                />
                                             </div>
                                         </form>
                                     </div>

@@ -1,5 +1,6 @@
 
 import AuthImage from '@/Components/Auth/authImage';
+import SpinnerButton from '@/Components/Main/MainComponents/SpinnerButton';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, useForm } from '@inertiajs/react';
 
@@ -78,12 +79,12 @@ export default function ResetPassword({ token, email }) {
                                                 <span className="text-danger fw-bold">{errors.password_confirmation}</span>
                                             </div>
 
-                                            <div className="text-center">
-                                                <button type='submit' className="btn bg-gradient-dark w-100 mt-4 mb-0 d-flex justify-content-center  align-items-center" disabled={processing}>
-                                                    {processing ? <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> : ""}
-                                                    Reset Password
-                                                </button>
-                                            </div>
+                                            <SpinnerButton
+                                                CssClass={"btn-dark w-100 mb-0 mt-2 text-center"}
+                                                ButtonText={"Reset Password"}
+                                                processing={processing}
+                                                Type={"submit"}
+                                            />
 
                                         </form>
                                     </div>

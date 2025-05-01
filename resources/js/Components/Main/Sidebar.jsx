@@ -1,5 +1,6 @@
 import { Link } from '@inertiajs/react'
 import React, { useEffect } from 'react'
+import SidebarLogo from "../../../assets/img/logo-ct-dark.png"
 
 export default function Sidebar() {
 
@@ -9,7 +10,7 @@ export default function Sidebar() {
                 <div className="sidenav-header">
                     <i className="bi bi-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
                     <Link className="navbar-brand m-0" href={route("dashboard")} target="_blank">
-                        <img src="../assets/img/logo-ct-dark.png" className="navbar-brand-img h-100" alt="main_logo" />
+                        <img src={SidebarLogo} className="navbar-brand-img h-100" alt="main_logo" />
                         <span className="ms-1 font-weight-bold">Cron Saas</span>
                     </Link>
                 </div>

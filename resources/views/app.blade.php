@@ -6,14 +6,6 @@
 
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
-
-
-       <link href="{{asset("assets/css/googlefont.css")}}" rel="stylesheet" />
-       <link id="pagestyle" href="{{ asset("assets/css/soft-ui-dashboard.css") }}" rel="stylesheet" />
-       <link href="{{ asset("assets/bootstrap-icons/font/bootstrap-icons.min.css") }}" rel="stylesheet" />
-
-
-
         @routes
         @viteReactRefresh
         @vite(['resources/js/app.jsx', "resources/js/Pages/{$page['component']}.jsx"])
@@ -23,10 +15,9 @@
         @inertia
     </body>
 
-    <script src="{{ asset("assets/js/core/popper.min.js") }}"></script>
-       <script src="{{ asset("assets/js/core/bootstrap.min.js") }}"></script>
-       <script src="{{ asset("assets/js/plugins/perfect-scrollbar.min.js") }}"></script>
-       <script src="{{ asset("assets/js/plugins/smooth-scrollbar.min.js") }}"></script>
+
+      @vite(["resources/assets/js/plugins/perfect-scrollbar.min.js"])
+      @vite(["resources/assets/js/plugins/smooth-scrollbar.min.js"])
 
 
        <script>
@@ -38,5 +29,4 @@
                 Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
             }
        </script>
-       <script src="{{ asset("assets/js/soft-ui-dashboard.js") }}"></script>
 </html>

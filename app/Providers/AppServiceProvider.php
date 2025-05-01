@@ -25,7 +25,6 @@ class AppServiceProvider extends ServiceProvider
         Vite::prefetch(concurrency: 3);
         Model::automaticallyEagerLoadRelationships();
 
-
         Inertia::share([
             "flash" => function () {
                 return [

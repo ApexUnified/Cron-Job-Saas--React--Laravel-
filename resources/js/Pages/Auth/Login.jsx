@@ -1,7 +1,7 @@
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import AuthImage from "@/Components/Auth/AuthImage";
-
+import SpinnerButton from "@/Components/Main/MainComponents/SpinnerButton";
 export default function Login({ status, canResetPassword }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         email: '',
@@ -72,14 +72,13 @@ export default function Login({ status, canResetPassword }) {
                                             </div>
 
 
-                                            <div className="text-center">
 
-                                                <button type='submit' className="btn bg-gradient-dark w-100 mt-4 mb-0 d-flex justify-content-center  align-items-center" disabled={processing}>
-                                                    {processing ? <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> : ""}
-                                                    Login
-                                                </button>
-
-                                            </div>
+                                            <SpinnerButton
+                                                CssClass={"btn-dark w-100 mb-0 mt-2 text-center"}
+                                                ButtonText={"Log In"}
+                                                processing={processing}
+                                                Type={"submit"}
+                                            />
                                         </form>
                                     </div>
                                     <div className="card-footer text-center pt-0 px-lg-2 px-1">
