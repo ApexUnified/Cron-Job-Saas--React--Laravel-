@@ -16,12 +16,14 @@ export default function edit() {
                     </h4>
                 }
 
+
+
             >
 
                 <Head title='Cron Jobs' />
 
 
-                <PartialEdit />
+                <PartialEdit heading={"Edit Cron Job"} />
 
             </AuthenticatedLayout>
         </>

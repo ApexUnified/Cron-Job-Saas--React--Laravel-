@@ -12,7 +12,7 @@ class CronJobController extends Controller
 
     public function index()
     {
-        $cronJobs = CronJob::latest()->paginate(10);
+        $cronJobs = CronJob::prefferedJobs()->latest()->paginate(5);
         return Inertia::render("CronJobs/index", compact("cronJobs"));
     }
 
@@ -24,16 +24,21 @@ class CronJobController extends Controller
 
     public function store(Request $request)
     {
+
+
+
         $validated_req = $request->validate(
             [
                 'title' => 'nullable|string|max:200',
                 'url' => 'required|url',
-                'method' => 'required|string|in:GET,POST,PUT,DELETE',
-                'execution_schedule' => 'required|array',
-                'custom_schedule' => 'nullable|array',
+                'method' => 'required|string|in:GET',
+                'is_require_auth' => 'nullable|boolean',
+                'auth_email' => 'nullable|email',
+                'auth_password' => 'nullable|string',
+                'schedule_execution' => 'required|array',
                 'user_id' => 'required|exists:users,id',
                 'is_enabled' => 'nullable|boolean',
-                'schedule_expiry_date' => 'nullable|date_format:d-M-Y H:i',
+                'schedule_expiry_date' => 'nullable|date',
                 'notify_when' => 'nullable|array',
             ],
             [
@@ -45,24 +50,64 @@ class CronJobController extends Controller
                 'url.url' => 'URL Must be a Valid URL Ex: https://example.com',
 
                 'method.required' => 'Method is Required',
-                'method.in' => 'Method Must be GET,POST,PUT,DELETE',
+                'method.in' => 'Method Must be GET',
+
+
+                'is_require_auth.boolean' => '(Is Authentication Required) Must be Boolean',
+                'auth_email.email' => 'Email Must be Valid Email',
+                'auth_password.string' => 'Password Must be String',
+
 
                 'execution_schedule.required' => 'Execution Schedule is Required',
                 'execution_schedule.array' => 'Execution Schedule Must be Array',
-
-                'custom_schedule.array' => 'Custom Schedule Should Be a Valid Custom Schedule Pattren That is Given',
 
                 'user_id.required' => 'User ID is Required',
                 'user_id.exists' => 'User ID Does Not Exist',
 
                 'is_enabled.boolean' => 'Is Enabled Must be Boolean',
 
-                'schedule_expiry_date.date_format' => 'Schedule Expiry Date Must be in d-M-Y H:i Format',
-
-                'notify_when.array' => 'Notify When Values Should Be Correct As Given In Form',
+                'schedule_expiry_date.date_format' => 'Schedule Expiry Date Must be a Valid Format',
             ]
 
         );
+
+
+        if (!empty($request->schedule_expiry_date)) {
+            $validated_req["schedule_expiry_date"] = date("Y-m-d H:i:s", strtotime($request->schedule_expiry_date));
+        }
+
+
+        if ($request->input("schedule_execution.type") == "minutes") {
+            $validated_req["schedule_execution"]["value"] = $validated_req["schedule_execution"]["value"]["minutes"];
+            $validated_req["schedule_execution"] = json_encode($validated_req["schedule_execution"]);
+        }
+
+
+
+        if ($request->input("schedule_execution.type") == "hours") {
+            $validated_req["schedule_execution"]["value"] = $validated_req["schedule_execution"]["value"]["hours"];
+
+            $validated_req["schedule_execution"] = json_encode($validated_req["schedule_execution"]);
+        }
+
+        if ($request->input("schedule_execution.type") == "months") {
+
+            $validated_req["schedule_execution"]["value"] = [
+                "months" => $validated_req["schedule_execution"]["value"]["months"]["months"],
+                "date" => $validated_req["schedule_execution"]["value"]["months"]["date"],
+                "hours" => $validated_req["schedule_execution"]["value"]["months"]["hours"],
+                "minutes" => $validated_req["schedule_execution"]["value"]["months"]["minutes"],
+            ];
+
+            $validated_req["schedule_execution"] = json_encode($validated_req["schedule_execution"]);
+        }
+
+
+
+        if (!empty($request->notify_when)) {
+            $validated_req["notify_when"] = json_encode($request->notify_when);
+        }
+
 
         if (CronJob::create($validated_req)) {
             return redirect()->route("cron-jobs.index")->with("success", "Cron Job Created Successfully");
@@ -85,14 +130,15 @@ class CronJobController extends Controller
             return back()->with("error", "Error Occured While Fetching Cron Job Please Try Again Later Or Contact, Our Support Team");
         }
 
-        $cronJob = CronJob::find($id);
+        $cronJob = CronJob::prefferedJobs()->find($id);
+        $user_id = Auth::id();
 
         if (empty($cronJob)) {
             return back()->with("error", "Error Occured While Fetching Cron Job Please Try Again Later Or Contact, Our Support Team");
         }
 
 
-        return Inertia::render("CronJobs/Edit", compact("cronJob"));
+        return Inertia::render("CronJobs/edit", compact("cronJob", "user_id"));
     }
 
 
@@ -107,12 +153,14 @@ class CronJobController extends Controller
             [
                 'title' => 'nullable|string|max:200',
                 'url' => 'required|url',
-                'method' => 'required|string|in:GET,POST,PUT,DELETE',
-                'execution_schedule' => 'required|array',
-                'custom_schedule' => 'nullable|array',
+                'method' => 'required|string|in:GET',
+                'is_require_auth' => 'nullable|boolean',
+                'auth_email' => 'nullable|email',
+                'auth_password' => 'nullable|string',
+                'schedule_execution' => 'required|array',
                 'user_id' => 'required|exists:users,id',
                 'is_enabled' => 'nullable|boolean',
-                'schedule_expiry_date' => 'nullable|date_format:d-M-Y H:i',
+                'schedule_expiry_date' => 'nullable|date',
                 'notify_when' => 'nullable|array',
             ],
             [
@@ -124,26 +172,66 @@ class CronJobController extends Controller
                 'url.url' => 'URL Must be a Valid URL Ex: https://example.com',
 
                 'method.required' => 'Method is Required',
-                'method.in' => 'Method Must be GET,POST,PUT,DELETE',
+                'method.in' => 'Method Must be GET',
+
+
+                'is_require_auth.boolean' => '(Is Authentication Required) Must be Boolean',
+                'auth_email.email' => 'Email Must be Valid Email',
+                'auth_password.string' => 'Password Must be String',
+
 
                 'execution_schedule.required' => 'Execution Schedule is Required',
                 'execution_schedule.array' => 'Execution Schedule Must be Array',
-
-                'custom_schedule.array' => 'Custom Schedule Should Be a Valid Custom Schedule Pattren That is Given',
 
                 'user_id.required' => 'User ID is Required',
                 'user_id.exists' => 'User ID Does Not Exist',
 
                 'is_enabled.boolean' => 'Is Enabled Must be Boolean',
 
-                'schedule_expiry_date.date_format' => 'Schedule Expiry Date Must be in d-M-Y H:i Format',
-
-                'notify_when.array' => 'Notify When Values Should Be Correct As Given In Form',
+                'schedule_expiry_date.date_format' => 'Schedule Expiry Date Must be a Valid Format',
             ]
 
         );
 
-        $cronJob = CronJob::find($id);
+
+        if (!empty($request->schedule_expiry_date)) {
+            $validated_req["schedule_expiry_date"] = date("Y-m-d H:i:s", strtotime($request->schedule_expiry_date));
+        }
+
+
+        if ($request->input("schedule_execution.type") == "minutes") {
+            $validated_req["schedule_execution"]["value"] = $validated_req["schedule_execution"]["value"]["minutes"];
+            $validated_req["schedule_execution"] = json_encode($validated_req["schedule_execution"]);
+        }
+
+
+
+        if ($request->input("schedule_execution.type") == "hours") {
+            $validated_req["schedule_execution"]["value"] = $validated_req["schedule_execution"]["value"]["hours"];
+
+            $validated_req["schedule_execution"] = json_encode($validated_req["schedule_execution"]);
+        }
+
+        if ($request->input("schedule_execution.type") == "months") {
+
+            $validated_req["schedule_execution"]["value"] = [
+                "months" => $validated_req["schedule_execution"]["value"]["months"]["months"],
+                "date" => $validated_req["schedule_execution"]["value"]["months"]["date"],
+                "hours" => $validated_req["schedule_execution"]["value"]["months"]["hours"],
+                "minutes" => $validated_req["schedule_execution"]["value"]["months"]["minutes"],
+            ];
+
+            $validated_req["schedule_execution"] = json_encode($validated_req["schedule_execution"]);
+        }
+
+
+
+        if (!empty($request->notify_when)) {
+            $validated_req["notify_when"] = json_encode($request->notify_when);
+        }
+
+
+        $cronJob = CronJob::prefferedJobs()->find($id);
 
         if (empty($cronJob)) {
             return back()->with("error", "Error Occured While Fetching Cron Job Please Try Again Later Or Contact, Our Support Team");
@@ -165,7 +253,7 @@ class CronJobController extends Controller
         }
 
 
-        $cronJob = CronJob::find($id);
+        $cronJob = CronJob::prefferedJobs()->find($id);
 
         if (empty($cronJob)) {
             return back()->with("error", "Error Occured While Fetching Cron Job Please Try Again Later Or Contact, Our Support Team");
@@ -179,16 +267,57 @@ class CronJobController extends Controller
     }
 
 
-    public function deletebyselection(Request $request)
+    public function deleteBySelection(Request $request)
     {
+
         if (is_array($request->array("cron_job_ids")) && count($request->array("cron_job_ids")) > 0) {
+
             if (
-                CronJob::whereIn("id", $request->array("ids"))->delete()
+                CronJob::prefferedJobs()->whereIn("id", $request->array("cron_job_ids"))->delete()
             ) {
                 return redirect()->route("cron-jobs.index")->with("success", "Selected Cron Jobs Deleted Successfully");
             } else {
                 return back()->with("error", "Error Occured While Deleting Selected Cron Jobs Please Try Again Later Or Contact, Our Support Team");
             }
+        }
+    }
+
+
+    public function disableBySelection(Request $request)
+    {
+        $cron_job_ids = $request?->data["cron_job_ids"] ?? null;
+
+        if (!empty($cron_job_ids)) {
+            foreach ($cron_job_ids as $key => $value) {
+                CronJob::prefferedJobs()->where("id", $value)->update(["is_enabled" => false]);
+            }
+            return redirect()->route("cron-jobs.index")->with("success", "Selected Cron Jobs Disabled Successfully");
+        } else {
+            return back()->with("error", "Error Occured While Disabling Selected Cron Jobs Please Try Again Later Or Contact, Our Support Team");
+        }
+    }
+
+    public function enableBySelection(Request $request)
+    {
+        $cron_job_ids = $request?->data["cron_job_ids"] ?? null;
+
+        if (!empty($cron_job_ids)) {
+            foreach ($cron_job_ids as $key => $value) {
+                $cronjobs = CronJob::prefferedJobs()->where("id", $value)->get();
+                foreach ($cronjobs as $cronjob) {
+                    $cronjob->is_enabled = true;
+
+                    if ($cronjob->is_schedule_expired == true) {
+                        $cronjob->is_schedule_expired = false;
+                        $cronjob->schedule_expiry_date = null;
+                    }
+
+                    $cronjob->save();
+                }
+            }
+            return redirect()->route("cron-jobs.index")->with("success", "Selected Cron Jobs Enabled Successfully");
+        } else {
+            return back()->with("error", "Error Occured While Enabling Selected Cron Jobs Please Try Again Later Or Contact, Our Support Team");
         }
     }
 }

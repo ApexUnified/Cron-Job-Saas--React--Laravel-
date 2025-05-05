@@ -15,9 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string("title")->nullable();
             $table->string("url");
-            $table->enum("method", ["GET", "POST", "PUT", "DELETE"])->default("GET");
-            $table->json("execution_schedule");
-            $table->json("custom_schedule")->nullable();
+            $table->enum("method", ["GET"])->default("GET");
+            $table->boolean("is_require_auth")->default(false);
+            $table->string("auth_email")->nullable();
+            $table->string("auth_password")->nullable();
+            $table->json("schedule_execution");
             $table->foreignId("user_id")->constrained("users")->cascadeOnDelete()->cascadeOnUpdate();
             $table->boolean("is_enabled")->default(true);
             $table->boolean("is_schedule_expired")->default(false);

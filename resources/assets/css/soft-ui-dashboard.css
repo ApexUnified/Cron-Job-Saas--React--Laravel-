@@ -204,7 +204,7 @@ body {
   line-height: var(--bs-body-line-height);
   color: var(--bs-body-color);
   text-align: var(--bs-body-text-align);
-  background-color: var(--bs-body-bg);
+  background-color: #fdfdfd;
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
@@ -28069,4 +28069,42 @@ pre[className*=language-] {
   pointer-events: none;
   opacity: 0.1;
   cursor: not-allowed;
+}
+
+
+
+
+/* custom Radio */
+
+.radio-input {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.radio-input input {
+  appearance: none;
+  width: 2em;
+  height: 2em;
+  background-color: rgb(231, 231, 232);
+  border-radius: 50%;
+  transition: .4s ease-in-out;
+}
+
+.radio-input input:hover {
+  scale: 1.2;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+
+
+.radio-input input:checked {
+  box-shadow: none;
+  background-color: black;
+}
+
+.radio-input input:checked+.circle {
+  transform: rotate(360deg);
+  scale: 1;
 }

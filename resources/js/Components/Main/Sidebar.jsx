@@ -13,7 +13,7 @@ export default function Sidebar() {
 
     return (
         <>
-            <aside className="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 " id="sidenav-main">
+            <aside className="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3  bg-white" id="sidenav-main">
 
                 <hr className="horizontal dark mt-0" />
                 <div className="collapse navbar-collapse h-auto" id="sidenav-collapse-main">

@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Auth;
 
 class CronJob extends Model
 {
@@ -11,8 +13,10 @@ class CronJob extends Model
         "title",
         "url",
         "method",
-        "execution_schedule",
-        "custom_schedule",
+        "is_require_auth",
+        "auth_email",
+        "auth_password",
+        "schedule_execution",
         "user_id",
         "is_enabled",
         "is_schedule_expired",
@@ -26,5 +30,12 @@ class CronJob extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, "user_id", "id");
+    }
+
+
+
+    public function ScopeprefferedJobs($query)
+    {
+        return $query->where("user_id", Auth::id());
     }
 }

@@ -1,30 +1,38 @@
-import { Link, useForm } from '@inertiajs/react'
+import { Link, useForm, usePage } from '@inertiajs/react'
 import React, { useEffect, useState } from 'react'
+import SpinnerButton from '../../MainComponents/SpinnerButton';
+import { toast } from 'react-toastify';
 
 export default function PartialCreate({ heading }) {
 
+    const { user_id } = usePage().props;
     const { data, setData, post, processing, errors } = useForm({
         title: "",
         url: "",
+        method: "GET",
         schedule_execution: {
             type: "",
             value: {
                 minutes: "",
                 hours: "",
-                days: {
-                    days: "",
+                months: {
+                    months: "",
+                    date: "",
                     hours: "",
                     minutes: ""
                 },
-                years: {
-                    years: "",
-                    months: "",
-                    days: "",
-                    hours: "",
-                    minutes: ""
-                }
+
             }
-        }
+        },
+        is_require_auth: false,
+        auth_email: "",
+        auth_password: "",
+        schedule_expiry_date: "",
+        user_id: user_id,
+        notify_when: {
+            execution_failed: false,
+            disable_after_too_many_failures: true
+        },
 
     });
 
@@ -32,18 +40,23 @@ export default function PartialCreate({ heading }) {
     const [minutes, setMinutes] = useState([]);
     const [hours, sethours] = useState([]);
     const [days, setDays] = useState([]);
-
+    const [months, setMonths] = useState([]);
+    const [selectedMonth, setSelectedMonth] = useState([]);
+    const [isExpiryDateToggle, setIsExpiryDateToggle] = useState(false);
+    const [next_executions, setNextExecutions] = useState([]);
+    const [now, setNow] = useState(new Date());
 
     useEffect(() => {
         const minutes = [];
         const hours = [];
         const days = [];
+        const months = [];
 
         for (let i = 5; i <= 60; i += 5) {
             minutes.push(i);
         }
 
-        for (let i = 2; i <= 24; i++) {
+        for (let i = 1; i <= 24; i++) {
             hours.push(i);
         }
 
@@ -52,11 +65,64 @@ export default function PartialCreate({ heading }) {
         }
 
 
+        for (let i = 1; i <= 12; i++) {
+            months.push(i);
+        }
+
+
+
+
         setDays(days);
+        setMonths(months);
         sethours(hours);
         setMinutes(minutes);
 
+
+
     }, []);
+
+
+    // Changing Days Upon Month Change
+    useEffect(() => {
+        const currentYear = new Date().getFullYear(); // dynamic current year
+        const numDays = new Date(currentYear, selectedMonth, 0).getDate();
+
+        const tempDays = [];
+        for (let i = 1; i <= numDays; i++) {
+            tempDays.push(i);
+        }
+        setDays(tempDays);
+    }, [selectedMonth]);
+
+
+
+    useEffect(() => {
+        checkAllFieldsForMonthsNextExecution();
+    }, [data.schedule_execution.value.months])
+
+
+    useEffect(() => {
+        if (data.is_require_auth === false) {
+
+            setData(prevData => ({
+                ...prevData,
+                auth_email: "",
+                auth_password: ""
+            }));
+        }
+    }, [data.is_require_auth]);
+
+
+    useEffect(() => {
+        if (data.is_require_auth === false) {
+            if (isExpiryDateToggle === false) {
+                setData(prevData => ({
+                    ...prevData,
+                    schedule_expiry_date: ""
+                }));
+            }
+        }
+    }, [isExpiryDateToggle]);
 
 
     const handleChange = (e) => {
@@ -71,25 +137,19 @@ export default function PartialCreate({ heading }) {
                     value: {
                         minutes: "",
                         hours: "",
-                        days: {
-                            days: "",
+                        months: {
+                            months: "",
+                            date: "",
                             hours: "",
                             minutes: ""
                         },
-                        years: {
-                            years: "",
-                            months: "",
-                            days: "",
-                            hours: "",
-                            minutes: ""
-                        }
+
                     }
                 }
             }));
         }
 
-        if (name.startsWith("schedule_execution.value.minutes")) {
-            console.log("Minutes Running");
+        if (name.startsWith("schedule_execution.value.minutes") && data.schedule_execution.type === "minutes") {
             setData(prevData => ({
                 ...prevData,
                 schedule_execution: {
@@ -100,10 +160,18 @@ export default function PartialCreate({ heading }) {
                     }
                 }
             }));
+
+            const executions = [];
+            for (let i = 1; i <= 4; i++) {
+                const next = new Date(now.getTime() + value * i * 60 * 1000);
+                executions.push(formatDate(next));
+            }
+            setNextExecutions(executions);
+
+
         }
 
-        if (name.startsWith("schedule_execution.value.hours")) {
-            console.log("Hours Running");
+        if (name.startsWith("schedule_execution.value.hours") && data.schedule_execution.type === "hours") {
             setData(prevData => ({
                 ...prevData,
                 schedule_execution: {
@@ -115,30 +183,187 @@ export default function PartialCreate({ heading }) {
                     }
                 }
             }));
+
+            const executions = [];
+            for (let i = 1; i <= 4; i++) {
+                const next = new Date(now.getTime() + value * i * 60 * 60 * 1000);
+                executions.push(formatDate(next));
+            }
+            setNextExecutions(executions);
         }
 
-        if (name.startsWith("schedule_execution.value.days.")) {
-            console.log("days Running");
+
+        if (name.startsWith("schedule_execution.value.months.months") && data.schedule_execution.type === "months") {
             setData(prevData => ({
                 ...prevData,
                 schedule_execution: {
                     ...prevData.schedule_execution,
-                    type: "days",
+                    type: "months",
                     value: {
                         ...prevData.schedule_execution.value,
-                        days: {
-                            ...prevData.schedule_execution.value.days,
-                            days: value
+                        months: {
+                            ...prevData.schedule_execution.value.months,
+                            months: value
+                        }
+                    }
+                }
+            }));
+            setSelectedMonth(value);
+        }
+
+
+        if (name.startsWith("schedule_execution.value.months.date") && data.schedule_execution.type === "months") {
+            setData(prevData => ({
+                ...prevData,
+                schedule_execution: {
+                    ...prevData.schedule_execution,
+                    type: "months",
+                    value: {
+                        ...prevData.schedule_execution.value,
+                        months: {
+                            ...prevData.schedule_execution.value.months,
+                            date: value
                         }
                     }
                 }
             }));
         }
+
+
+
+        if (name.startsWith("schedule_execution.value.months.hours") && data.schedule_execution.type === "months") {
+            setData(prevData => ({
+                ...prevData,
+                schedule_execution: {
+                    ...prevData.schedule_execution,
+                    type: "months",
+                    value: {
+                        ...prevData.schedule_execution.value,
+                        months: {
+                            ...prevData.schedule_execution.value.months,
+                            hours: value
+                        }
+                    }
+                }
+            }));
+        }
+
+        if (name.startsWith("schedule_execution.value.months.minutes") && data.schedule_execution.type === "months") {
+            setData(prevData => ({
+                ...prevData,
+                schedule_execution: {
+                    ...prevData.schedule_execution,
+                    type: "months",
+                    value: {
+                        ...prevData.schedule_execution.value,
+                        months: {
+                            ...prevData.schedule_execution.value.months,
+                            minutes: value
+                        }
+                    }
+                }
+            }));
+        }
+
     };
+
+
+
+    const formatDate = (date) => {
+        return date.toLocaleString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true,
+        });
+    };
+
+
+    const checkAllFieldsForMonthsNextExecution = () => {
+        if (data.schedule_execution.type === 'months') {
+            const executions = [];
+
+            const monthIncrement = parseInt(data.schedule_execution.value.months.months) || 1;
+            const targetDate = parseInt(data.schedule_execution.value.months.date) || now.getDate();
+            const targetHours = parseInt(data.schedule_execution.value.months.hours) || now.getHours();
+            const targetMinutes = parseInt(data.schedule_execution.value.months.minutes) || now.getMinutes();
+
+            for (let i = 1; i <= 4; i++) {
+                const exec = new Date(now);
+                exec.setMonth(exec.getMonth() + i * monthIncrement);
+
+                const daysInMonth = new Date(exec.getFullYear(), exec.getMonth() + 1, 0).getDate();
+                const validDate = Math.min(targetDate, daysInMonth);
+                exec.setDate(validDate);
+                exec.setHours(targetHours, targetMinutes, 0, 0);
+
+                executions.push(formatDate(exec));
+            }
+
+            setNextExecutions(executions);
+        }
+    };
+
+
+
 
     const submit = (e) => {
         e.preventDefault();
-        console.log(data);
+
+        if (isExpiryDateToggle && data.schedule_expiry_date === '') {
+            toast.error("Please Enter Exipiry Date If Schedule Expiry is Enabled");
+            return;
+        }
+
+
+        if (data.is_require_auth) {
+            if (
+
+                data.auth_email === "" || data.auth_password === ""
+            ) {
+                toast.error("Please Enter Email And Password If Authentication is Enabled");
+                return;
+            }
+        }
+
+        if (data.schedule_execution.type === "") {
+            toast.error("Please Select Schedule Execution Type");
+            return;
+        }
+
+        if (data.schedule_execution.type === "minutes" && data.schedule_execution.value.minutes === "") {
+            toast.error("Please Select Minutes If Schedule Execution Type is Minutes");
+            return;
+        }
+
+
+
+        if (data.schedule_execution.type === "hours" && data.schedule_execution.value.hours === "") {
+            toast.error("Please Select Hours If Schedule Execution Type is Hours");
+            return;
+        }
+
+        if (data.schedule_execution.type === "months") {
+            if (
+
+                data.schedule_execution.value.months.months === ""
+                || data.schedule_execution.value.months.date === ""
+                || data.schedule_execution.value.months.hours === ""
+                || data.schedule_execution.value.months.minutes === ""
+
+            ) {
+                toast.error("Please Select Each Field If Schedule Execution Type is Months");
+                return;
+            }
+
+        }
+
+
+        post(route('cron-jobs.store'), data);
+
     }
 
 
@@ -160,6 +385,13 @@ export default function PartialCreate({ heading }) {
                 </div>
 
                 <form onSubmit={submit}>
+                    {/* Default GET METHOD FOR NORMAL REUQESTS */}
+                    <input type="text"
+                        name='method'
+                        value={data.method}
+                        onChange={(e) => setData('method', e.target.value)}
+                        hidden />
+
                     <div className="row my-3">
                         <div className="col-md-12">
                             <div className="card shadow-lg">
@@ -175,10 +407,12 @@ export default function PartialCreate({ heading }) {
                                             value={data.title}
                                             onChange={(e) => setData('title', e.target.value)}
                                         />
+
+                                        <span className="text-danger fw-bold">{errors.title}</span>
                                     </div>
 
                                     <div className="mb-3">
-                                        <label htmlFor='url' className="form-label">URL</label>
+                                        <label htmlFor='url' className="form-label">URL <span className="text-danger">*</span></label>
                                         <input type="text"
                                             id='url'
                                             className="form-control"
@@ -187,6 +421,7 @@ export default function PartialCreate({ heading }) {
                                             value={data.url}
                                             onChange={(e) => setData('url', e.target.value)}
                                         />
+                                        <span className="text-danger fw-bold">{errors.url}</span>
                                     </div>
 
 
@@ -196,27 +431,36 @@ export default function PartialCreate({ heading }) {
                     </div>
 
 
+
+
                     <div className="row my-3">
                         <div className="col-md-12">
                             <div className="card shadow-lg">
                                 <div className="card-header">
-                                    <h6>Execution Schedule</h6>
+                                    <h6>Execution Schedule <span className="text-danger">*</span></h6>
                                 </div>
                                 <div className="card-body">
                                     <div className="row">
+
+
                                         <div className="col-md-8">
+
 
                                             <div className="row">
                                                 <div className="col-md-12">
                                                     <div className="d-flex align-items-center gap-1">
-                                                        <input
-                                                            type="radio"
-                                                            id="minutes_radio"
-                                                            name="schedule_execution.type"
-                                                            value="minutes"
-                                                            onChange={handleChange}
 
-                                                        />
+                                                        <div className="radio-input">
+                                                            <input
+                                                                type="radio"
+                                                                id="minutes_radio"
+                                                                name="schedule_execution.type"
+                                                                value="minutes"
+                                                                onChange={handleChange}
+
+                                                            />
+
+                                                        </div>
 
                                                         <label htmlFor='minutes_radio' className="mb-0">Every</label>
                                                         <select className="form-select form-select-sm w-auto mx-1"
@@ -224,6 +468,7 @@ export default function PartialCreate({ heading }) {
                                                             name='schedule_execution.value.minutes'
                                                             value={data.schedule_execution.value.minutes}
                                                             onChange={handleChange}
+                                                            disabled={data.schedule_execution.type !== "minutes"}
 
 
                                                         >
@@ -245,20 +490,25 @@ export default function PartialCreate({ heading }) {
                                             <div className="row">
                                                 <div className="col-md-12">
                                                     <div className="d-flex align-items-center gap-1">
-                                                        <input type="radio"
-                                                            id='hours_radio'
-                                                            name="schedule_execution.type"
-                                                            value="hours"
 
-                                                            onChange={handleChange}
+                                                        <div className="radio-input">
 
-                                                        />
+                                                            <input type="radio"
+                                                                id='hours_radio'
+                                                                name="schedule_execution.type"
+                                                                value="hours"
+                                                                onChange={handleChange}
+
+                                                            />
+
+                                                        </div>
                                                         <label htmlFor='hours_radio' className="mb-0">Every</label>
                                                         <select className="form-select form-select-sm w-auto mx-1"
                                                             style={{ paddingRight: "1.5rem" }}
                                                             name='schedule_execution.value.hours'
                                                             value={data.schedule_execution.value.hours}
                                                             onChange={handleChange}
+                                                            disabled={data.schedule_execution.type !== "hours"}
                                                         >
                                                             <option value="" ></option>
                                                             {
@@ -279,20 +529,42 @@ export default function PartialCreate({ heading }) {
                                             <div className="row">
                                                 <div className="col-md-12">
                                                     <div className="d-flex align-items-center gap-1">
-                                                        <input type="radio"
-                                                            id='days_radio'
-                                                            name="schedule_execution.type"
-                                                            value="days"
 
-                                                            onChange={handleChange}
-                                                        />
-                                                        <label htmlFor='days_radio' className="mb-0">Every</label>
+                                                        <div className="radio-input">
+                                                            <input type="radio"
+                                                                id='months_radio'
+                                                                name="schedule_execution.type"
+                                                                value="months"
+                                                                onChange={handleChange}
+                                                            />
+
+                                                        </div>
+
+                                                        <label htmlFor='months_radio' className="mb-0">Every Month</label>
                                                         <select className="form-select form-select-sm w-auto mx-1"
                                                             style={{ paddingRight: "1.5rem" }}
-                                                            name='schedule_execution.value.days.days'
-                                                            value={data.schedule_execution.value.days.days}
+                                                            name='schedule_execution.value.months.months'
+                                                            value={data.schedule_execution.value.months.months}
                                                             onChange={handleChange}
+                                                            disabled={data.schedule_execution.type !== "months"}
 
+                                                        >
+                                                            <option value="" ></option>
+                                                            {
+                                                                months.map((month, index) => (
+                                                                    <option key={index} value={month}>{month}</option>
+                                                                ))
+                                                            }
+
+                                                        </select>
+                                                        <label htmlFor='months_radio' className="mb-0">Date </label>
+
+                                                        <select className="form-select form-select-sm w-auto mx-1"
+                                                            style={{ paddingRight: "1.5rem" }}
+                                                            name='schedule_execution.value.months.date'
+                                                            value={data.schedule_execution.value.months.date}
+                                                            onChange={handleChange}
+                                                            disabled={data.schedule_execution.type !== "months"}
                                                         >
                                                             <option value="" ></option>
                                                             {
@@ -302,13 +574,13 @@ export default function PartialCreate({ heading }) {
                                                             }
 
                                                         </select>
-                                                        <label htmlFor='days_radio' className="mb-0">Of The Month At</label>
-
+                                                        <label htmlFor='months_radio' className="mb-0"> Hours</label>
                                                         <select className="form-select form-select-sm w-auto mx-1"
                                                             style={{ paddingRight: "1.5rem" }}
-                                                            name='schedule_execution.value.days.hours'
-                                                            value={data.schedule_execution.value.days.hours}
+                                                            name='schedule_execution.value.months.hours'
+                                                            value={data.schedule_execution.value.months.hours}
                                                             onChange={handleChange}
+                                                            disabled={data.schedule_execution.type !== "months"}
                                                         >
                                                             <option value="" ></option>
                                                             {
@@ -318,12 +590,15 @@ export default function PartialCreate({ heading }) {
                                                             }
 
                                                         </select>
-                                                        :
+
+
+                                                        <label htmlFor='months_radio' className="mb-0">Minutes</label>
                                                         <select className="form-select form-select-sm w-auto mx-1"
                                                             style={{ paddingRight: "1.5rem" }}
-                                                            name='schedule_execution.value.days.minutes'
-                                                            value={data.schedule_execution.value.days.minutes}
+                                                            name='schedule_execution.value.months.minutes'
+                                                            value={data.schedule_execution.value.months.minutes}
                                                             onChange={handleChange}
+                                                            disabled={data.schedule_execution.type !== "months"}
                                                         >
                                                             <option value="" ></option>
                                                             {
@@ -334,18 +609,200 @@ export default function PartialCreate({ heading }) {
 
                                                         </select>
 
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                            <div className="row mt-5">
+                                                <div className="col-md-12">
+                                                    <div className="my-3">
+                                                        <div className="form-check form-switch">
+                                                            <input className="form-check-input"
+                                                                type="checkbox"
+                                                                id="schedule_expiry_toggle"
+                                                                onChange={(e) => { setIsExpiryDateToggle(e.target.checked) }}
+                                                            />
+                                                            <label className="form-check-label" htmlFor="schedule_expiry_toggle">Schedule Expiry</label>
+                                                        </div>
+
 
                                                     </div>
                                                 </div>
                                             </div>
 
+
+                                            {
+                                                isExpiryDateToggle &&
+                                                <div className="row">
+                                                    <div className="col-md-12">
+                                                        <div className="my-3">
+                                                            <label htmlFor="schedule_expiry_date">Set Schedule Expiry Date <span className="text-danger">*</span></label>
+                                                            <input type="datetime-local"
+                                                                className='form-control cursor-pointer'
+                                                                onChange={(e) => setData("schedule_expiry_date", e.target.value)}
+                                                                value={data.schedule_expiry_date}
+                                                            />
+
+                                                            <span className="text-danger">{errors.schedule_expiry_date}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+
                                         </div>
+
+
+
                                         <div className="col-md-4">
-                                            <button type="submit">Save</button>
+                                            <div className="card shadow-lg">
+                                                <div className="card-header">
+                                                    <h6>Next Executions</h6>
+                                                    {
+
+                                                        next_executions.map((next_execution, index) => {
+                                                            return (
+                                                                <p key={index}>{next_execution} </p>
+                                                            )
+                                                        })
+
+                                                    }
+                                                </div>
+
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+
+                    <div className="row my-3">
+
+                        <div className="col-md-12">
+                            <div className="card shadow-lg">
+                                <div className="card-header"> <h6>HTTP Authentication</h6></div>
+                                <div className="card-body">
+                                    <div className="row">
+                                        <div className="col-md-12">
+
+                                            <div className="form-check form-switch">
+                                                <input className="form-check-input"
+                                                    type="checkbox"
+                                                    id="is_require_auth"
+                                                    name='is_require_auth'
+                                                    onChange={(e) => { setData("is_require_auth", e.target.checked) }}
+                                                />
+                                                <label className="form-check-label" htmlFor="is_require_auth">HTTP Authentication Required</label>
+                                            </div>
+
+
+
+                                        </div>
+                                    </div>
+
+
+                                    {data.is_require_auth &&
+
+                                        <>
+                                            <div className="row mt-3">
+                                                <div className="col-md-12">
+                                                    <div className="mb-3">
+                                                        <label htmlFor="auth_email">Username / Email <span className="text-danger">*</span></label>
+                                                        <input type="email"
+                                                            className='form-control'
+                                                            placeholder='yourEmail@email.com'
+                                                            name='auth_email'
+                                                            autoComplete='current-email'
+                                                            value={data.auth_email}
+                                                            onChange={(e) => setData("auth_email", e.target.value)}
+                                                        />
+
+                                                        <span className="text-danger">{errors.auth_email}</span>
+                                                    </div>
+
+
+                                                    <div className="mb-3">
+                                                        <label htmlFor="auth_password">Password <span className="text-danger">*</span></label>
+                                                        <input type="password"
+                                                            className='form-control'
+                                                            placeholder='**********'
+                                                            name='auth_password'
+                                                            autoComplete='current-password'
+                                                            value={data.auth_password}
+                                                            onChange={(e) => setData("auth_password", e.target.value)}
+                                                        />
+
+                                                        <span className="text-danger">{errors.auth_password}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </>
+                                    }
+
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div className="row my-3">
+
+                        <div className="col-md-12">
+                            <div className="card shadow-lg">
+                                <div className="card-header">  <h6>Notify When</h6></div>
+                                <div className="card-body">
+                                    <div className="row">
+                                        <div className="col-md-12">
+                                            <div className="form-check form-switch">
+                                                <input className="form-check-input"
+                                                    type="checkbox"
+                                                    id="notify_when.execution_failed"
+                                                    name='notify_when.execution_failed'
+                                                    onChange={(e) => { setData("notify_when.execution_failed", e.target.checked) }}
+                                                />
+                                                <label className="form-check-label" htmlFor="notify_when.execution_failed">Notify When job Execution Failed</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div className="row my-3">
+                                        <div className="col-md-12">
+                                            <div className="form-check form-switch">
+                                                <input className="form-check-input"
+                                                    type="checkbox"
+                                                    id="notify_when.disable_after_too_many_failures"
+                                                    name='notify_when.disable_after_too_many_failures'
+                                                    onChange={(e) => { setData("notify_when.disable_after_too_many_failures", e.target.checked) }}
+                                                    checked={data.notify_when.disable_after_too_many_failures === true ? true : false}
+                                                />
+                                                <label className="form-check-label" htmlFor="notify_when.disable_after_too_many_failures">
+                                                    Cron Job Will Be Disabled Because Of Too Many Failures
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div className="row">
+                        <div className="col-md-12">
+                            <SpinnerButton
+                                ButtonIcon={<i className="bi bi-plus-square mx-2"></i>}
+                                ButtonText={"Create Cron Job"}
+                                processing={processing}
+                                Type={"submit"}
+                                CssClass={"btn-dark"}
+                            />
                         </div>
                     </div>
                 </form>

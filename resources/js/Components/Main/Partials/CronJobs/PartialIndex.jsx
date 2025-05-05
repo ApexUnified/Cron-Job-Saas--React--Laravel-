@@ -1,71 +1,158 @@
-import { Link, useForm, usePage } from '@inertiajs/react'
-import React from 'react'
+import { Link, router, useForm, usePage } from '@inertiajs/react'
+import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify';
+import Swal from 'sweetalert2';
 export default function PartialIndex({ heading }) {
 
     const { cronJobs } = usePage().props;
+    const { flash } = usePage().props
     const { post, processing } = useForm({});
+    const [selectedIds, setSelectedIds] = useState([]);
 
+
+    useEffect(() => {
+
+        if (flash?.success) {
+            toast.success(flash.success);
+        }
+
+        if (flash?.error) {
+            toast.error(flash.error);
+        }
+    }, [flash])
     const ConfirmableToast = (id) => {
 
-        toast(
-            ({ closeToast }) => (
-                <div style={{
-                    padding: '16px',
-                    borderRadius: '8px',
-                    backgroundColor: '#fff',
-                    color: '#333',
-                    fontFamily: 'Arial, sans-serif',
-                    maxWidth: '300px'
-                }}>
-                    <p style={{ margin: '0 0 12px', fontWeight: 'bold' }}>Are you sure?</p>
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-                        <button
-                            onClick={() => { handleDelete(id); closeToast(); }}
-                            style={{
-                                padding: '6px 12px',
-                                color: '#222',
-                                border: 'none',
-                                borderRadius: '4px',
-                                cursor: 'pointer'
-                            }}
-                        >
-                            Yes, Delete
-                        </button>
-                        <button
-                            onClick={closeToast}
-                            style={{
-                                padding: '6px 12px',
-                                backgroundColor: 'red',
-                                color: '#fff',
-                                border: 'none',
-                                borderRadius: '4px',
-                                cursor: 'pointer'
-                            }}
-                        >
-                            Cancel
-                        </button>
-                    </div>
-                </div>
-            ),
-            {
-                autoClose: false,
-                closeOnClick: false,
-                closeButton: false,
-                draggable: false,
-                position: 'top-center',
+        Swal.fire({
+            title: 'Are you sure You Want To Delete This Cron Job?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#222',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                handleDelete(id);
             }
-        );
+        })
     }
 
 
     const handleDelete = (id) => {
-        post(route('cron-jobs.delete', id));
+        post(route('cron-jobs.destroy', id), {
+            headers: {
+                'X-HTTP-Method-Override': 'DELETE'
+            }
+        });
+    }
+
+
+    const selectAllJobs = () => {
+        const allSelectedjobs = document.querySelectorAll(".cron-job-select");
+        const ids = [];
+        allSelectedjobs.forEach((el) => {
+            el.checked = document.getElementById("cron_job_select_all").checked;
+            if (el.checked) {
+                ids.push(el.value);
+            }
+
+            setSelectedIds(ids);
+        });
+    }
+
+    const unSelectAfterAction = () => {
+        const allSelectedjobs = document.querySelectorAll(".cron-job-select");
+        const parentcheckBox = document.getElementById("cron_job_select_all").checked = false;
+        allSelectedjobs.forEach((el) => {
+            el.checked = false;
+        });
+        setSelectedIds([]);
+    }
+
+
+
+    const selectSingleJob = (id, isChecked) => {
+        if (isChecked) {
+            setSelectedIds(prev => [...prev, id]);
+        } else {
+            setSelectedIds(prev => prev.filter(item => item !== id));
+        }
+    };
+
+
+    const handleBulkActions = (type) => {
+
+        if (type === "Delete") {
+            Swal.fire({
+                title: 'Are you sure You Want To Delete All The Selected Jobs?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#222',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    unSelectAfterAction();
+                    router.delete(route('cron-jobs.deletebyselection'), {
+                        preserveScroll: true,
+                        data: {
+                            cron_job_ids: selectedIds
+                        }
+                    });
+                }
+            });
+        }
+
+        if (type === "Disable") {
+            Swal.fire({
+                title: 'Are you sure You Want To Disable All The Selected Jobs?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#222',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, Disable it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    unSelectAfterAction();
+                    router.patch(route('cron-jobs.disablebyselection'), {
+                        preserveScroll: true,
+                        data: {
+                            cron_job_ids: selectedIds
+                        }
+                    });
+                }
+            });
+        }
+        if (type === "Enable") {
+            Swal.fire({
+                title: 'Are you sure You Want To Enable All The Selected Jobs?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#222',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, Enable it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    unSelectAfterAction();
+                    router.patch(route('cron-jobs.enablebyselection'), {
+                        preserveScroll: true,
+                        data: {
+                            cron_job_ids: selectedIds
+                        }
+                    });
+                }
+            });
+        }
+
+
+
+
+
     }
 
     return (
         <>
-
             <div className="d-flex justify-content-between flex-wrap">
                 <h3>{heading}</h3>
                 <Link href={route('cron-jobs.create')} className="btn btn-dark ">
@@ -78,15 +165,31 @@ export default function PartialIndex({ heading }) {
                 <div className="col-12">
                     <div className="card mb-4">
                         <div className="card-body px-0 pt-0 pb-2">
+                            {selectedIds.length > 0 &&
+
+                                <div className="d-flex justify-content-start flex-wrap mx-5">
+                                    <div className="dropdown px-3">
+                                        <a className="cursor-pointer" id="dropdownTable" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i className="bi bi-three-dots-vertical fs-4"></i>
+                                        </a>
+                                        <ul className="dropdown-menu px-2 py-3" aria-labelledby="dropdownTable">
+                                            <li><a className="dropdown-item border-radius-md" onClick={() => handleBulkActions("Delete")}><i className='bi bi-trash text-danger mx-1'></i>Delete </a></li>
+                                            <li><a className="dropdown-item border-radius-md" onClick={() => handleBulkActions("Enable")}><i className='bi bi-toggle-on text-success mx-1'></i >Enable</a></li>
+                                            <li><a className="dropdown-item border-radius-md" onClick={() => handleBulkActions("Disable")}><i className='bi bi-toggle-off text-primary mx-1'></i>Disable</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                            }
                             <div className="table-responsive p-0">
-                                <table className="table align-items-center mb-0 text-center">
+                                <table className="table align-items-center mb-0 text-left">
                                     <thead>
                                         <tr>
                                             <th>
 
-                                                <div className="checkbox-container">
+                                                <div className="checkbox-container text-center">
                                                     <label className={`ios-checkbox dark ${cronJobs.data.length == 0 ? 'no-pointer' : ''}`}  >
-                                                        <input type="checkbox" id='cron_job_select_all' />
+                                                        <input type="checkbox" id='cron_job_select_all' onClick={selectAllJobs} />
                                                         <div className="checkbox-wrapper">
                                                             <div className="checkbox-bg"></div>
                                                             <svg className="checkbox-icon" viewBox="0 0 24 24" fill="none">
@@ -113,62 +216,77 @@ export default function PartialIndex({ heading }) {
                                     </thead>
                                     <tbody>
 
+
+
                                         {cronJobs.data.map((cronJob) => {
-
-                                            <tr>
-                                                <td>
-                                                    <div className="checkbox-container">
-                                                        <label className="ios-checkbox red">
-                                                            <input type="checkbox" name='cronJob_id' value={cronJob.id} />
-                                                            <div className="checkbox-wrapper">
-                                                                <div className="checkbox-bg"></div>
-                                                                <svg className="checkbox-icon" viewBox="0 0 24 24" fill="none">
-                                                                    <path
-                                                                        className="check-path"
-                                                                        d="M4 12L10 18L20 6"
-                                                                        stroke="currentColor"
-                                                                        strokeWidth="3"
-                                                                        strokeLinecap="round"
-                                                                        strokeLinejoin="round"
-                                                                    ></path>
-                                                                </svg>
-                                                            </div>
-                                                        </label>
-                                                    </div>
-
-
-                                                </td>
-                                                <td>
-                                                    <div className="d-flex px-2 py-1 justify-content-center">
-                                                        <div className="d-flex flex-column justify-content-center align-items-center flex-wrap">
-                                                            <h6 className="mb-0 text-sm">{cronJob.title} </h6>
-                                                            <p className="text-xs text-secondary mb-0"> <i className='bi bi-stopwatch-fill fs-5 text-dark'></i>{cronJob.url}</p>
+                                            return (
+                                                <tr key={cronJob.id}>
+                                                    <td>
+                                                        <div className="checkbox-container text-center">
+                                                            <label className="ios-checkbox red">
+                                                                <input type="checkbox"
+                                                                    className='cron-job-select'
+                                                                    onChange={(e) => selectSingleJob(cronJob.id, e.target.checked)}
+                                                                    name='cronJob_id'
+                                                                    value={cronJob.id} />
+                                                                <div className="checkbox-wrapper">
+                                                                    <div className="checkbox-bg"></div>
+                                                                    <svg className="checkbox-icon" viewBox="0 0 24 24" fill="none">
+                                                                        <path
+                                                                            className="check-path"
+                                                                            d="M4 12L10 18L20 6"
+                                                                            stroke="currentColor"
+                                                                            strokeWidth="3"
+                                                                            strokeLinecap="round"
+                                                                            strokeLinejoin="round"
+                                                                        ></path>
+                                                                    </svg>
+                                                                </div>
+                                                            </label>
                                                         </div>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <p className="text-xs font-weight-bold mb-0">{cronJob.last_execution}</p>
 
-                                                </td>
-                                                <td className="align-middle text-center text-sm">
-                                                    <span className="badge badge-sm bg-gradient-secondary">{cronJob.method}</span>
-                                                </td>
 
-                                                <td className="align-middle text-center text-sm">
-                                                    <span className={`badge badge-sm bg-gradient-${cronJob.is_enabled ? "success" : "danger"}`}>{cronJob.is_enabled ? "Enabled" : "Disabled"}</span>
-                                                </td>
+                                                    </td>
+                                                    <td>
+                                                        <div className="d-flex px-2 py-1 justify-content-start text-left">
+                                                            <div className="d-flex flex-column justify-content-center align-items-center flex-wrap">
+                                                                <h6 className="mb-0 text-sm">{cronJob.title} </h6>
+                                                                <p className="text-xs text-secondary mb-0"> <i className={`bi bi-stopwatch-fill fs-5 mx-2  text-${cronJob.is_schedule_expired ? "danger" : "success"}`}></i><a href={cronJob.url} target="_blank">{cronJob.url.slice(0, 20) + "..."}</a></p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <p className="text-xs font-weight-bold mb-0">{cronJob.last_execution || "No Execution Found"}</p>
 
-                                                <td className="align-middle">
-                                                    <Link href={route('cronJob.edit', cronJob.id)}><i className='bi bi-pencil-fill cursor-pointer text-light bg-dark rounded p-2'></i></Link>
+                                                    </td>
+                                                    <td className="align-middle text-sm">
+                                                        <span className="badge badge-sm bg-gradient-dark text-white">{cronJob.method}</span>
+                                                    </td>
 
-                                                    <Link href={route('cron-jobs.show', cronJob.id)} className="btn btn-dark mx-2">
-                                                        <i className="bi bi-clock-history mx-1"></i>
-                                                    </Link>
+                                                    <td className="align-middle text-sm">
+                                                        <span className={`badge badge-sm bg-gradient-${cronJob.is_enabled ? "dark" : "danger"}`}>{cronJob.is_enabled ? "Enabled" : "Disabled"}</span>
+                                                    </td>
 
-                                                    <i className='bi bi-trash-fill cursor-pointer  text-light bg-dark rounded p-2 mx-2' onClick={(() => ConfirmableToast(cronJob.id))}></i>
+                                                    <td className="align-middle text-sm">
 
-                                                </td>
-                                            </tr>
+
+
+
+                                                        <Link href={route('cron-jobs.edit', cronJob.id)}>
+                                                            <i className='bi bi-pencil-fill cursor-pointer text-dark fs-5 mx-1'></i>
+                                                        </Link>
+
+                                                        <Link href={route('cron-jobs.show', cronJob.id)}>
+                                                            <i className="bi bi-clock-history mx-1 fs-5 cursor-pointer text-dark mx-1"></i>
+                                                        </Link>
+
+                                                        <i className='bi bi-trash-fill cursor-pointer text-dark   rounded fs-5 mx-2' onClick={(() => ConfirmableToast(cronJob.id))}></i>
+
+
+                                                    </td>
+                                                </tr>
+                                            )
+
 
                                         })
 
@@ -178,8 +296,27 @@ export default function PartialIndex({ heading }) {
                                     </tbody>
                                 </table>
                             </div>
+
+
+                            <div className="row mt-4">
+                                <div className="col-md-12 d-flex justify-content-end flex-wrap">
+                                    <div className="pagination">
+                                        {cronJobs.links.map((link) => {
+                                            return (
+                                                <Link key={link.label} className={`btn btn-outline-dark mx-1 ${link.url ? "" : "disabled"} ${link.active ? "active disabled bg-dark text-white" : ""}`}
+                                                    href={link.url || ""}>
+                                                    <div dangerouslySetInnerHTML={{ __html: link.label }}></div>
+                                                </Link>
+                                            )
+                                        })}
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
+
                     </div>
+
                 </div>
             </div>
 
