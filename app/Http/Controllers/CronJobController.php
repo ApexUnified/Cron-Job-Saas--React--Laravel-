@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CronJob;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -12,7 +13,24 @@ class CronJobController extends Controller
 
     public function index()
     {
-        $cronJobs = CronJob::prefferedJobs()->latest()->paginate(5);
+        $cronJobs = CronJob::prefferedJobs()
+            ->with(['cronJobsHistory' => function ($query) {
+                $query->latest()->limit(1);
+            }])->latest()->paginate(5);
+
+        $cronJobs->getCollection()->transform(function ($job) {
+            $job->last_execution = !empty($job->last_execution) ?  Carbon::parse($job->last_execution)->format("Y-m-d g:i A") : "";
+
+
+
+            if ($job->cronJobsHistory->count() > 0) {
+                $job->execution_duration = $job->cronJobsHistory->first()->execution_duration;
+            }
+
+            return $job;
+        });
+
+
         return Inertia::render("CronJobs/index", compact("cronJobs"));
     }
 
@@ -25,14 +43,13 @@ class CronJobController extends Controller
     public function store(Request $request)
     {
 
-
-
         $validated_req = $request->validate(
             [
                 'title' => 'nullable|string|max:200',
                 'url' => 'required|url',
                 'method' => 'required|string|in:GET',
                 'is_require_auth' => 'nullable|boolean',
+                'auth_api_login_endpoint' => 'nullable|url',
                 'auth_email' => 'nullable|email',
                 'auth_password' => 'nullable|string',
                 'schedule_execution' => 'required|array',
@@ -48,6 +65,8 @@ class CronJobController extends Controller
 
                 'url.required' => 'URL is Required',
                 'url.url' => 'URL Must be a Valid URL Ex: https://example.com',
+
+                'auth_api_login_endpoint.url' => 'URL Must be a Valid URL Ex: https://example.com/login ',
 
                 'method.required' => 'Method is Required',
                 'method.in' => 'Method Must be GET',
@@ -116,14 +135,6 @@ class CronJobController extends Controller
         }
     }
 
-    public function show(string $id)
-    {
-        if (empty($id)) {
-            return back()->with("error", "Error Occured While Fetching Cron Job Please Try Again Later Or Contact, Our Support Team");
-        }
-    }
-
-
     public function edit(string $id)
     {
         if (empty($id)) {
@@ -157,6 +168,7 @@ class CronJobController extends Controller
                 'is_require_auth' => 'nullable|boolean',
                 'auth_email' => 'nullable|email',
                 'auth_password' => 'nullable|string',
+                'auth_api_login_endpoint' => 'nullable|url',
                 'schedule_execution' => 'required|array',
                 'user_id' => 'required|exists:users,id',
                 'is_enabled' => 'nullable|boolean',
@@ -170,6 +182,8 @@ class CronJobController extends Controller
 
                 'url.required' => 'URL is Required',
                 'url.url' => 'URL Must be a Valid URL Ex: https://example.com',
+
+                'auth_api_login_endpoint.url' => 'URL Must be a Valid URL Ex: https://example.com/login ',
 
                 'method.required' => 'Method is Required',
                 'method.in' => 'Method Must be GET',
@@ -237,6 +251,13 @@ class CronJobController extends Controller
             return back()->with("error", "Error Occured While Fetching Cron Job Please Try Again Later Or Contact, Our Support Team");
         }
 
+
+        if ($validated_req["is_enabled"] == true) {
+            if ($cronJob->is_schedule_expired == 1) {
+                $validated_req["is_schedule_expired"] = false;
+                $validated_req["schedule_expiry_date"] = null;
+            }
+        }
 
 
         if ($cronJob->update($validated_req)) {

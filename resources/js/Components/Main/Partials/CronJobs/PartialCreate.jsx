@@ -27,6 +27,7 @@ export default function PartialCreate({ heading }) {
         is_require_auth: false,
         auth_email: "",
         auth_password: "",
+        auth_api_login_endpoint: "",
         schedule_expiry_date: "",
         user_id: user_id,
         notify_when: {
@@ -43,7 +44,7 @@ export default function PartialCreate({ heading }) {
     const [months, setMonths] = useState([]);
     const [selectedMonth, setSelectedMonth] = useState([]);
     const [isExpiryDateToggle, setIsExpiryDateToggle] = useState(false);
-    const [next_executions, setNextExecutions] = useState([]);
+    // const [next_executions, setNextExecutions] = useState([]);
     const [now, setNow] = useState(new Date());
 
     useEffect(() => {
@@ -96,9 +97,9 @@ export default function PartialCreate({ heading }) {
 
 
 
-    useEffect(() => {
-        checkAllFieldsForMonthsNextExecution();
-    }, [data.schedule_execution.value.months])
+    // useEffect(() => {
+    //     checkAllFieldsForMonthsNextExecution();
+    // }, [data.schedule_execution.value.months])
 
 
     useEffect(() => {
@@ -107,20 +108,19 @@ export default function PartialCreate({ heading }) {
             setData(prevData => ({
                 ...prevData,
                 auth_email: "",
-                auth_password: ""
+                auth_password: "",
+                auth_api_login_endpoint: ""
             }));
         }
     }, [data.is_require_auth]);
 
 
     useEffect(() => {
-        if (data.is_require_auth === false) {
-            if (isExpiryDateToggle === false) {
-                setData(prevData => ({
-                    ...prevData,
-                    schedule_expiry_date: ""
-                }));
-            }
+        if (isExpiryDateToggle === false) {
+            setData(prevData => ({
+                ...prevData,
+                schedule_expiry_date: ""
+            }));
         }
     }, [isExpiryDateToggle]);
 
@@ -161,12 +161,12 @@ export default function PartialCreate({ heading }) {
                 }
             }));
 
-            const executions = [];
-            for (let i = 1; i <= 4; i++) {
-                const next = new Date(now.getTime() + value * i * 60 * 1000);
-                executions.push(formatDate(next));
-            }
-            setNextExecutions(executions);
+            // const executions = [];
+            // for (let i = 1; i <= 4; i++) {
+            //     const next = new Date(now.getTime() + value * i * 60 * 1000);
+            //     executions.push(formatDate(next));
+            // }
+            // setNextExecutions(executions);
 
 
         }
@@ -184,12 +184,12 @@ export default function PartialCreate({ heading }) {
                 }
             }));
 
-            const executions = [];
-            for (let i = 1; i <= 4; i++) {
-                const next = new Date(now.getTime() + value * i * 60 * 60 * 1000);
-                executions.push(formatDate(next));
-            }
-            setNextExecutions(executions);
+            // const executions = [];
+            // for (let i = 1; i <= 4; i++) {
+            //     const next = new Date(now.getTime() + value * i * 60 * 60 * 1000);
+            //     executions.push(formatDate(next));
+            // }
+            // setNextExecutions(executions);
         }
 
 
@@ -269,43 +269,43 @@ export default function PartialCreate({ heading }) {
 
 
 
-    const formatDate = (date) => {
-        return date.toLocaleString('en-US', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true,
-        });
-    };
+    // const formatDate = (date) => {
+    //     return date.toLocaleString('en-US', {
+    //         weekday: 'long',
+    //         year: 'numeric',
+    //         month: 'long',
+    //         day: 'numeric',
+    //         hour: 'numeric',
+    //         minute: '2-digit',
+    //         hour12: true,
+    //     });
+    // };
 
 
-    const checkAllFieldsForMonthsNextExecution = () => {
-        if (data.schedule_execution.type === 'months') {
-            const executions = [];
+    // const checkAllFieldsForMonthsNextExecution = () => {
+    //     if (data.schedule_execution.type === 'months') {
+    //         const executions = [];
 
-            const monthIncrement = parseInt(data.schedule_execution.value.months.months) || 1;
-            const targetDate = parseInt(data.schedule_execution.value.months.date) || now.getDate();
-            const targetHours = parseInt(data.schedule_execution.value.months.hours) || now.getHours();
-            const targetMinutes = parseInt(data.schedule_execution.value.months.minutes) || now.getMinutes();
+    //         const monthIncrement = parseInt(data.schedule_execution.value.months.months) || 1;
+    //         const targetDate = parseInt(data.schedule_execution.value.months.date) || now.getDate();
+    //         const targetHours = parseInt(data.schedule_execution.value.months.hours) || now.getHours();
+    //         const targetMinutes = parseInt(data.schedule_execution.value.months.minutes) || now.getMinutes();
 
-            for (let i = 1; i <= 4; i++) {
-                const exec = new Date(now);
-                exec.setMonth(exec.getMonth() + i * monthIncrement);
+    //         for (let i = 1; i <= 4; i++) {
+    //             const exec = new Date(now);
+    //             exec.setMonth(exec.getMonth() + i * monthIncrement);
 
-                const daysInMonth = new Date(exec.getFullYear(), exec.getMonth() + 1, 0).getDate();
-                const validDate = Math.min(targetDate, daysInMonth);
-                exec.setDate(validDate);
-                exec.setHours(targetHours, targetMinutes, 0, 0);
+    //             const daysInMonth = new Date(exec.getFullYear(), exec.getMonth() + 1, 0).getDate();
+    //             const validDate = Math.min(targetDate, daysInMonth);
+    //             exec.setDate(validDate);
+    //             exec.setHours(targetHours, targetMinutes, 0, 0);
 
-                executions.push(formatDate(exec));
-            }
+    //             executions.push(formatDate(exec));
+    //         }
 
-            setNextExecutions(executions);
-        }
-    };
+    //         setNextExecutions(executions);
+    //     }
+    // };
 
 
 
@@ -413,7 +413,7 @@ export default function PartialCreate({ heading }) {
 
                                     <div className="mb-3">
                                         <label htmlFor='url' className="form-label">URL <span className="text-danger">*</span></label>
-                                        <input type="text"
+                                        <input type="url"
                                             id='url'
                                             className="form-control"
                                             placeholder='Example: https://example.com'
@@ -654,7 +654,7 @@ export default function PartialCreate({ heading }) {
 
 
 
-                                        <div className="col-md-4">
+                                        {/* <div className="col-md-4">
                                             <div className="card shadow-lg">
                                                 <div className="card-header">
                                                     <h6>Next Executions</h6>
@@ -670,7 +670,7 @@ export default function PartialCreate({ heading }) {
                                                 </div>
 
                                             </div>
-                                        </div>
+                                        </div> */}
                                     </div>
                                 </div>
                             </div>
@@ -708,6 +708,22 @@ export default function PartialCreate({ heading }) {
                                         <>
                                             <div className="row mt-3">
                                                 <div className="col-md-12">
+
+
+                                                    <div className="mb-3">
+                                                        <label htmlFor="auth_api_login_endpoint"> Api Login Endpoint <span className="text-danger">*</span></label>
+                                                        <input type="url"
+                                                            className='form-control'
+                                                            placeholder='https://example.com/login'
+                                                            name='auth_api_login_endpoint'
+                                                            value={data.auth_api_login_endpoint}
+                                                            onChange={(e) => setData("auth_api_login_endpoint", e.target.value)}
+                                                        />
+
+                                                        <span className="text-danger">{errors.auth_api_login_endpoint}</span>
+                                                    </div>
+
+
                                                     <div className="mb-3">
                                                         <label htmlFor="auth_email">Username / Email <span className="text-danger">*</span></label>
                                                         <input type="email"
@@ -736,6 +752,9 @@ export default function PartialCreate({ heading }) {
 
                                                         <span className="text-danger">{errors.auth_password}</span>
                                                     </div>
+
+
+
                                                 </div>
                                             </div>
                                         </>

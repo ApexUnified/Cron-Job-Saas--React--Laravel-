@@ -19,6 +19,8 @@ return new class extends Migration
             $table->boolean("is_require_auth")->default(false);
             $table->string("auth_email")->nullable();
             $table->string("auth_password")->nullable();
+            $table->string("auth_api_login_endpoint")->nullable();
+            $table->text("api_token")->nullable();
             $table->json("schedule_execution");
             $table->foreignId("user_id")->constrained("users")->cascadeOnDelete()->cascadeOnUpdate();
             $table->boolean("is_enabled")->default(true);

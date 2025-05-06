@@ -1,7 +1,6 @@
 <x-mail::message>
-# Introduction
+# Hey {{ $cronjob->user->name }} 👋
 
-The body of your message.
 
 # Important Update 
  

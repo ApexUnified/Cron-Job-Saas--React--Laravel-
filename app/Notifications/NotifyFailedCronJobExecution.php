@@ -3,16 +3,19 @@
 namespace App\Notifications;
 
 use App\Models\CronJob;
+use App\Models\CronJobHistory;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class ScheduleExpiryNotification extends Notification implements ShouldQueue
+class NotifyFailedCronJobExecution extends Notification implements ShouldQueue
 {
     use Queueable;
 
-
+    /**
+     * Create a new notification instance.
+     */
     public function __construct(public CronJob $cronjob)
     {
         //
@@ -25,7 +28,7 @@ class ScheduleExpiryNotification extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return ['mail', "database"];
+        return ['mail', 'database'];
     }
 
     /**
@@ -33,7 +36,7 @@ class ScheduleExpiryNotification extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
-        return (new MailMessage)->markdown('mail.schedule_expiry_notification', ["cronjob" => $this->cronjob]);
+        return (new MailMessage)->markdown('mail.notify-failed-cron-job-execution', ["cronjob" => $this->cronjob]);
     }
 
     /**
@@ -44,8 +47,8 @@ class ScheduleExpiryNotification extends Notification implements ShouldQueue
     public function toArray(object $notifiable): array
     {
         return [
-            'cronjob' => $this->cronjob,
-            'message' => "Your Cron Job Has Been Expired It Means It Wont Be Executed Again."
+            "cronjob" => $this->cronjob,
+            "message" => "Unexpected Error While Executing Cron Job"
         ];
     }
 }

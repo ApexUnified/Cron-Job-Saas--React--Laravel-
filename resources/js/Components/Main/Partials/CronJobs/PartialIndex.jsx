@@ -251,32 +251,31 @@ export default function PartialIndex({ heading }) {
                                                         <div className="d-flex px-2 py-1 justify-content-start text-left">
                                                             <div className="d-flex flex-column justify-content-center align-items-center flex-wrap">
                                                                 <h6 className="mb-0 text-sm">{cronJob.title} </h6>
-                                                                <p className="text-xs text-secondary mb-0"> <i className={`bi bi-stopwatch-fill fs-5 mx-2  text-${cronJob.is_schedule_expired ? "danger" : "success"}`}></i><a href={cronJob.url} target="_blank">{cronJob.url.slice(0, 20) + "..."}</a></p>
+                                                                <p> <i className={`bi bi-stopwatch-fill fs-5 mx-2  text-${cronJob.is_schedule_expired ? "danger" : "success"}`}></i><a href={cronJob.url} target="_blank">{cronJob.url.slice(0, 20) + "..."}</a></p>
                                                             </div>
                                                         </div>
                                                     </td>
                                                     <td>
-                                                        <p className="text-xs font-weight-bold mb-0">{cronJob.last_execution || "No Execution Found"}</p>
+                                                        <p>{cronJob.last_execution || "No Execution Found"}</p>
+                                                        <p>Took <span className='text-primary'>{cronJob.execution_duration}</span> Seconds</p>
 
                                                     </td>
-                                                    <td className="align-middle text-sm">
+                                                    <td className="align-middle">
                                                         <span className="badge badge-sm bg-gradient-dark text-white">{cronJob.method}</span>
                                                     </td>
 
-                                                    <td className="align-middle text-sm">
+                                                    <td className="align-middle">
                                                         <span className={`badge badge-sm bg-gradient-${cronJob.is_enabled ? "dark" : "danger"}`}>{cronJob.is_enabled ? "Enabled" : "Disabled"}</span>
                                                     </td>
 
-                                                    <td className="align-middle text-sm">
-
-
+                                                    <td className="align-middle">
 
 
                                                         <Link href={route('cron-jobs.edit', cronJob.id)}>
                                                             <i className='bi bi-pencil-fill cursor-pointer text-dark fs-5 mx-1'></i>
                                                         </Link>
 
-                                                        <Link href={route('cron-jobs.show', cronJob.id)}>
+                                                        <Link href={route('cron-job-history.index', cronJob.id)}>
                                                             <i className="bi bi-clock-history mx-1 fs-5 cursor-pointer text-dark mx-1"></i>
                                                         </Link>
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -33,6 +34,10 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'auth' => [
                 'user' => $request->user(),
+                'notifications' => $request->user() ? $request->user()->notifications()->orderBy("created_at", "DESC")->limit(5)->get()->map(function ($notification) {
+                    $notification->human_created_at = $notification->created_at->diffForHumans();
+                    return $notification;
+                }) : []
             ],
         ];
     }

@@ -1,2 +1,4 @@
 Notify When  Logic Remeaning In Backend
 And Also Show / View CronJob History Logic Remeaning..
+
+Notify User After Too Many Failing Request To Track That Ihave Made Cron_job_histiory Table

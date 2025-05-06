@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Console\Commands\AutoCheckJobScheduleExpiry;
+use App\Console\Commands\CronJobScheduleRunner;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Vite;
@@ -38,5 +39,6 @@ class AppServiceProvider extends ServiceProvider
 
 
         $schedule->command(AutoCheckJobScheduleExpiry::class)->everyMinute();
+        $schedule->command(CronJobScheduleRunner::class)->everyMinute();
     }
 }
