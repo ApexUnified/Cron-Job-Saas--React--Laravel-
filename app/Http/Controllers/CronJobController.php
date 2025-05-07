@@ -19,7 +19,7 @@ class CronJobController extends Controller
             }])->latest()->paginate(5);
 
         $cronJobs->getCollection()->transform(function ($job) {
-            $job->last_execution = !empty($job->last_execution) ?  Carbon::parse($job->last_execution)->format("Y-m-d g:i A") : "";
+            $job->last_execution = !empty($job->last_execution) ?  Carbon::parse($job->last_execution)->diffForHumans() : "";
 
 
 
@@ -267,6 +267,7 @@ class CronJobController extends Controller
         }
     }
 
+
     public function destroy(string $id)
     {
         if (empty($id)) {
@@ -287,6 +288,61 @@ class CronJobController extends Controller
         }
     }
 
+
+    public function copy(Request $request, string $id)
+    {
+        if (empty($id)) {
+            return back()->with("error", "Error Occured While Fetching Cron Job Please Try Again Later Or Contact, Our Support Team");
+        }
+
+        $cronJob = CronJob::prefferedJobs()->find($id);
+
+        if (empty($cronJob)) {
+            return back()->with("error", "Error Occured While Fetching Cron Job Please Try Again Later Or Contact, Our Support Team");
+        }
+
+        $newCronJob = $cronJob->replicate();
+
+
+        if (!empty($newCronJob->title)) {
+            $newCronJob->title = $newCronJob->title . " ( Copy ) " . substr(uniqid(), -2);
+        }
+        $newCronJob->last_execution = null;
+        $newCronJob->disabled_at = null;
+
+        if ($newCronJob->save()) {
+            return back()->with("success", "Cron Job Copied Successfully");
+        } else {
+            return back()->with("error", "Error Occured While Copying Cron Job Please Try Again Later Or Contact, Our Support Team");
+        }
+    }
+
+    public function copyBySelection(Request $request)
+    {
+        $data = $request?->data;
+        if (empty($data)) {
+            return back()->with("error", "Error Occured While Copying Cron Job Please Try Again Later Or Contact, Our Support Team");
+        }
+        $cron_job_ids = $data["cron_job_ids"];
+        $cronJobs = CronJob::prefferedJobs()->whereIn("id", $cron_job_ids)->get();
+
+        if ($cronJobs->isEmpty()) {
+            return back()->with("error", "Error Occured While Copying Cron Job Please Try Again Later Or Contact, Our Support Team");
+        }
+
+
+        foreach ($cronJobs as $cronJob) {
+            $newCronJob  = $cronJob->replicate();
+            if (!empty($newCronJob->title)) {
+                $newCronJob->title = $newCronJob->title . " ( Copy ) " . substr(uniqid(), -2);
+            }
+            $newCronJob->last_execution = null;
+            $newCronJob->disabled_at = null;
+            $newCronJob->save();
+        }
+
+        return back()->with("success", "Cron Jobs Copied Successfully");
+    }
 
     public function deleteBySelection(Request $request)
     {

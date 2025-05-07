@@ -29,7 +29,7 @@ export default function Sidebar() {
 
 
                         <li className="nav-item mt-4">
-                            <Link className={route().current("cron-jobs.*") ? "nav-link bg-dark rounded text-light" : "nav-link"} href={route("cron-jobs.index")}>
+                            <Link className={route().current("cron-jobs.*") ? "nav-link bg-dark rounded text-light" : (route().current("cron-job-history.*") ? "nav-link bg-dark rounded text-light" : "nav-link")} href={route("cron-jobs.index")}>
                                 <div className="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                                     <i className="bi bi-stopwatch-fill fs-5 text-dark"></i>
                                 </div>

@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\CronJob;
 use App\Models\CronJobHistory;
+use App\Notifications\InvalidDomainForCronJob;
 use App\Notifications\NotifyFailedCronJobExecution;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -91,6 +92,7 @@ class CronJobScheduleRunner extends Command
         $now = Carbon::now();
 
         if ($schedule_execution["type"] === "minutes") {
+
             $schedule_span_minutes = (int) $schedule_execution["value"];
             $parsed_schedule = null;
 
@@ -161,16 +163,16 @@ class CronJobScheduleRunner extends Command
 
         $domain = parse_url($job->url, PHP_URL_HOST);
         if (!checkdnsrr($domain, 'A') && !checkdnsrr($domain, 'AAAA') && !checkdnsrr($domain, 'CNAME')) {
+            $job->user->notify(new InvalidDomainForCronJob($job));
+            $job->update(["is_enabled" => false]);
             return;
         }
-
 
 
         if (!$job->is_require_auth) {
             $response = Http::get($job->url);
             return $response;
         }
-
 
         $loginResponse = Http::post($job->auth_api_login_endpoint, [
             'email' => $job->auth_email,

@@ -1,4 +1,4 @@
-import { Link, useForm, usePage } from '@inertiajs/react';
+import { Link, router, useForm, usePage } from '@inertiajs/react';
 import React, { useEffect, useState } from 'react'
 import SpinnerButton from '../../MainComponents/SpinnerButton';
 import { toast } from 'react-toastify';
@@ -377,6 +377,11 @@ export default function PartialEdit({ heading }) {
     }
 
 
+    const copy = (id) => {
+        router.post(route("cron-jobs.copy", id));
+    }
+
+
 
 
     return (
@@ -386,10 +391,22 @@ export default function PartialEdit({ heading }) {
 
                 <div className="d-flex justify-content-between flex-wrap">
                     <h3>{heading}</h3>
-                    <Link href={route('cron-jobs.index')} className="btn btn-dark ">
-                        <i className="bi bi-arrow-bar-left mx-1"></i>
-                        Back To CronJob
-                    </Link>
+
+                    <div>
+
+                        <button href={route('cron-jobs.index')} className="btn btn-dark mx-2 " onClick={() => copy(cronJob.id)}>
+                            <i className="bi bi-clipboard-check mx-1"></i>
+                            Copy This Job
+                        </button>
+
+                        <Link href={route('cron-jobs.index')} className="btn btn-dark ">
+                            <i className="bi bi-arrow-bar-left mx-1"></i>
+                            Back To CronJob
+                        </Link>
+
+                    </div>
+
+
                 </div>
 
                 <form onSubmit={submit}>

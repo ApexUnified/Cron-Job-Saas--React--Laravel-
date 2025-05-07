@@ -1,25 +1,13 @@
 import { Link, router, useForm, usePage } from '@inertiajs/react'
 import React, { useEffect, useState } from 'react'
-import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 export default function PartialIndex({ heading }) {
 
     const { cronJobs } = usePage().props;
-    const { flash } = usePage().props
     const { post, processing } = useForm({});
     const [selectedIds, setSelectedIds] = useState([]);
 
 
-    useEffect(() => {
-
-        if (flash?.success) {
-            toast.success(flash.success);
-        }
-
-        if (flash?.error) {
-            toast.error(flash.error);
-        }
-    }, [flash])
     const ConfirmableToast = (id) => {
 
         Swal.fire({
@@ -144,6 +132,27 @@ export default function PartialIndex({ heading }) {
                 }
             });
         }
+        if (type === "Copy") {
+            Swal.fire({
+                title: 'Are you sure You Want To Copy All The Selected Jobs?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#222',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, Copy it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    unSelectAfterAction();
+                    router.post(route('cron-jobs.bulk.copy'), {
+                        preserveScroll: true,
+                        data: {
+                            cron_job_ids: selectedIds
+                        }
+                    });
+                }
+            });
+        }
+
 
 
 
@@ -176,6 +185,7 @@ export default function PartialIndex({ heading }) {
                                             <li><a className="dropdown-item border-radius-md" onClick={() => handleBulkActions("Delete")}><i className='bi bi-trash text-danger mx-1'></i>Delete </a></li>
                                             <li><a className="dropdown-item border-radius-md" onClick={() => handleBulkActions("Enable")}><i className='bi bi-toggle-on text-success mx-1'></i >Enable</a></li>
                                             <li><a className="dropdown-item border-radius-md" onClick={() => handleBulkActions("Disable")}><i className='bi bi-toggle-off text-primary mx-1'></i>Disable</a></li>
+                                            <li><a className="dropdown-item border-radius-md" onClick={() => handleBulkActions("Copy")}><i className='bi bi-clipboard-check text-primary mx-1'></i>Copy</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -257,7 +267,7 @@ export default function PartialIndex({ heading }) {
                                                     </td>
                                                     <td>
                                                         <p>{cronJob.last_execution || "No Execution Found"}</p>
-                                                        <p>Took <span className='text-primary'>{cronJob.execution_duration}</span> Seconds</p>
+                                                        {cronJob.last_execution ? <p>Took <span className='text-primary'>{cronJob.execution_duration}</span> Seconds</p> : ""}
 
                                                     </td>
                                                     <td className="align-middle">

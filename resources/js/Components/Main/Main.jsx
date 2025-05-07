@@ -82,34 +82,44 @@ export default function Main({ children, header }) {
                                             <i className="bi bi-bell cursor-pointer"></i>
                                         </a>
                                         <ul className="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
-                                            {auth.notifications.map((notification, index) => (
+                                            {auth.notifications.length > 0 ?
                                                 <>
-                                                    <li className="mb-2">
-                                                        <a className="dropdown-item border-radius-md" href="#">
-                                                            <div className="d-flex py-1">
-                                                                <div className="my-auto">
-                                                                    <img src={notificationIcon2} className="avatar avatar-sm  me-3 " />
-                                                                </div>
-                                                                <div className="d-flex flex-column justify-content-center">
-                                                                    <h6 className="text-sm font-weight-normal mb-1">
-                                                                        <span className="font-weight-bold">New message</span> from System
-                                                                    </h6>
-                                                                    <p>{notification["data"]["message"]}</p>
-                                                                    <p className="text-xs text-secondary mb-0 ">
-                                                                        <i className="fa fa-clock me-1"></i>
-                                                                        {notification.human_created_at}
-                                                                    </p>
+                                                    {
+                                                        auth.notifications.map((notification, index) => (
+                                                            <div key={index + 1}>
+                                                                <li className="mb-2">
+                                                                    <a className="dropdown-item border-radius-md" href="#">
+                                                                        <div className="d-flex py-1">
+                                                                            <div className="my-auto">
+                                                                                <img src={notificationIcon2} className="avatar avatar-sm  me-3 " />
+                                                                            </div>
+                                                                            <div className="d-flex flex-column justify-content-center">
+                                                                                <h6 className="text-sm font-weight-normal mb-1">
+                                                                                    <span className="font-weight-bold">New message</span> from System
+                                                                                </h6>
+                                                                                <p>{notification["data"]["message"]}</p>
+                                                                                <p className="text-xs text-secondary mb-0 ">
+                                                                                    <i className="fa fa-clock me-1"></i>
+                                                                                    {notification.human_created_at}
+                                                                                </p>
 
-                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </a>
+
+                                                                </li>
                                                             </div>
-                                                        </a>
-
-                                                    </li>
+                                                        ))
+                                                    }
+                                                    <p className='text-center'>
+                                                        <Link className='text-primary'>See More</Link>
+                                                    </p>
                                                 </>
-                                            ))}
-                                            <p className='text-center'>
-                                                <Link className='text-primary'>See More</Link>
-                                            </p>
+                                                :
+                                                "No Notification Found"
+
+                                            }
+
                                         </ul>
                                     </li>
                                 </div>
@@ -123,14 +133,14 @@ export default function Main({ children, header }) {
 
                 <div className="container-fluid py-4">
                     {children}
-                    <footer className="footer pt-3 mt-5  ">
+                    <footer className="footer pt-3 mt-6">
                         <div className="container-fluid">
                             <div className="row align-items-center justify-content-lg-between">
                                 <div className="col-lg-6 mb-lg-0 mb-4">
                                     <div className="copyright text-center text-sm text-muted text-lg-start">
                                         ©
-                                        {new Date().getFullYear()},
-                                        made with <i className="bi bi-heart"></i> by
+                                        {new Date().getFullYear() + " "}
+                                        made By
                                         <Link href="http://sheikhabdullah-001-site1.ptempurl.com" className="font-weight-bold mx-2" target="_blank">Sheikh Abdullah</Link>
                                         for a better Cron Job Experience.
                                     </div>

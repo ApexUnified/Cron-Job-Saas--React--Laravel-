@@ -24,6 +24,7 @@ return new class extends Migration
             $table->json("schedule_execution");
             $table->foreignId("user_id")->constrained("users")->cascadeOnDelete()->cascadeOnUpdate();
             $table->boolean("is_enabled")->default(true);
+            $table->timestamp("disabled_at")->nullable();;
             $table->boolean("is_schedule_expired")->default(false);
             $table->timestamp("schedule_expiry_date")->nullable();
             $table->timestamp("last_execution")->nullable();

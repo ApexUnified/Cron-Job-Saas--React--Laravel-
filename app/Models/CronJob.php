@@ -22,6 +22,7 @@ class CronJob extends Model
         "schedule_execution",
         "user_id",
         "is_enabled",
+        "disabled_at",
         "is_schedule_expired",
         "schedule_expiry_date",
         "last_execution",

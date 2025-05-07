@@ -3,7 +3,7 @@
 
 
 # Important Note
-Your {{ $cronjob->title ?? $cronjob->url }} Cron Job Has Failed  Please Check Your Cron Job
+Your  {{ $cronjob->title ?? $cronjob->url }} Cron Job Has Failed  Please Check Your Cron Job
 For More Information And It Will Be Disabled If It Still Fails.
 
 
