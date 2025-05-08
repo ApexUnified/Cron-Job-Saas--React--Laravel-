@@ -1,4 +1,20 @@
-Notify When  Logic Remeaning In Backend
-And Also Show / View CronJob History Logic Remeaning..
+TODO For Tomorrow:
 
-Notify User After Too Many Failing Request To Track That Ihave Made Cron_job_histiory Table
+1) Subscription Module In Settings Will Be Made For Everyone Where I WIll Show All Subscription Packages And User Will See His Subscription From There 
+And Also Subscribe From There And Also Its Table Will be Added On DATABASE NAMED: subscriptions (All Subscription Data Like Requests, and other things will be mentioned there)
+
+2) Subscriptions Module For Admin Where All Subscriptioned Users Will Show 
+
+3) Filtering Will Be Add In User Module
+
+4) Application Setting Module Will Be Made On Settings Module
+
+5) Statics Module Will Be Made Where All Requests Of System Show For Everyone
+
+6) Roles Assigning Completed And Permission Creation and assigning also Comepleted Just Remeaning Protecting Routes and controllers and main Frontend 
+
+7) In The End Full Strict Checking And Modifications If (Needed)
+
+
+
+
