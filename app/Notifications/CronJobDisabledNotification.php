@@ -35,7 +35,9 @@ class CronJobDisabledNotification extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
-        return (new MailMessage)->markdown('mail.cron-job-disabled-notification', ["cronJob" => $this->cronJob]);
+        return (new MailMessage)
+            ->subject('Cron Job Disabled')
+            ->markdown('mail.cron-job-disabled-notification', ["cronJob" => $this->cronJob]);
     }
 
     /**

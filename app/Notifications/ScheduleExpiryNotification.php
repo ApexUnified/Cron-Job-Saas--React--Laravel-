@@ -33,7 +33,9 @@ class ScheduleExpiryNotification extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
-        return (new MailMessage)->markdown('mail.schedule_expiry_notification', ["cronjob" => $this->cronjob]);
+        return (new MailMessage)
+            ->subject('Cron Job Expired')
+            ->markdown('mail.schedule_expiry_notification', ["cronjob" => $this->cronjob]);
     }
 
     /**

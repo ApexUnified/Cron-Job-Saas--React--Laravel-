@@ -71,9 +71,9 @@ export default function Main({ children, header }) {
                                     </a>
                                 </li>
                                 <li className="nav-item px-3 d-flex align-items-center">
-                                    <a href="#" className="nav-link text-body p-0">
+                                    <Link href={route("settings.index")} className="nav-link text-body p-0">
                                         <i className="bi bi-gear fixed-plugin-button-nav cursor-pointer"></i>
-                                    </a>
+                                    </Link>
                                 </li>
 
                                 <div className="d-md-flex d-none">

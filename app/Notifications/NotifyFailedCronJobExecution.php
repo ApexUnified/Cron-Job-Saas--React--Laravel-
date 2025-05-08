@@ -36,7 +36,9 @@ class NotifyFailedCronJobExecution extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
-        return (new MailMessage)->markdown('mail.notify-failed-cron-job-execution', ["cronjob" => $this->cronjob]);
+        return (new MailMessage)
+            ->subject("Cron Job Failed")
+            ->markdown('mail.notify-failed-cron-job-execution', ["cronjob" => $this->cronjob]);
     }
 
     /**

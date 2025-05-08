@@ -35,7 +35,9 @@ class InvalidDomainForCronJob extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
-        return (new MailMessage)->markdown('mail.invalid-domain-for-cron-job', ["cronJob" => $this->cronJob]);
+        return (new MailMessage)
+            ->subject('Invalid Domain For Cron Job')
+            ->markdown('mail.invalid-domain-for-cron-job', ["cronJob" => $this->cronJob]);
     }
 
     /**

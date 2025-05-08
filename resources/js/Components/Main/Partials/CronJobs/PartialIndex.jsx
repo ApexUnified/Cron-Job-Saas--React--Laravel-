@@ -259,7 +259,7 @@ export default function PartialIndex({ heading }) {
                                                     </td>
                                                     <td>
                                                         <div className="d-flex px-2 py-1 justify-content-start text-left">
-                                                            <div className="d-flex flex-column justify-content-center align-items-center flex-wrap">
+                                                            <div>
                                                                 <h6 className="mb-0 text-sm">{cronJob.title} </h6>
                                                                 <p> <i className={`bi bi-stopwatch-fill fs-5 mx-2  text-${cronJob.is_schedule_expired ? "danger" : "success"}`}></i><a href={cronJob.url} target="_blank">{cronJob.url.slice(0, 20) + "..."}</a></p>
                                                             </div>
@@ -312,7 +312,7 @@ export default function PartialIndex({ heading }) {
                                     <div className="pagination">
                                         {cronJobs.links.map((link) => {
                                             return (
-                                                <Link key={link.label} className={`btn btn-outline-dark mx-1 ${link.url ? "" : "disabled"} ${link.active ? "active disabled bg-dark text-white" : ""}`}
+                                                <Link preserveScroll key={link.label} className={`btn btn-outline-dark mx-1 ${link.url ? "" : "disabled"} ${link.active ? "active disabled bg-dark text-white" : ""}`}
                                                     href={link.url || ""}>
                                                     <div dangerouslySetInnerHTML={{ __html: link.label }}></div>
                                                 </Link>

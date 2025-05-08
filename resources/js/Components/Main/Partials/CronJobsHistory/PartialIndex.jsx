@@ -56,7 +56,7 @@ export default function PartialIndex() {
         <>
 
             <div className="d-flex justify-content-end flex-wrap">
-                <Link href={route('cron-jobs.index')} className='btn bg-gradient-dark '>  <i className="bi bi-arrow-bar-left mx-1"></i> Back</Link>
+                <Link href={route('cron-jobs.index')} className='btn bg-gradient-dark '>  <i className="bi bi-arrow-bar-left mx-1"></i> Back To Cron Jobs</Link>
             </div>
 
 
@@ -147,7 +147,7 @@ export default function PartialIndex() {
                                     <div className="pagination">
                                         {cronJobHistory.links.map((link) => {
                                             return (
-                                                <Link key={link.label} className={`btn btn-outline-dark mx-1 ${link.url ? "" : "disabled"} ${link.active ? "active disabled bg-dark text-white" : ""}`}
+                                                <Link preserveScroll key={link.label} className={`btn btn-outline-dark mx-1 ${link.url ? "" : "disabled"} ${link.active ? "active disabled bg-dark text-white" : ""}`}
                                                     href={link.url || ""}>
                                                     <div dangerouslySetInnerHTML={{ __html: link.label }}></div>
                                                 </Link>
