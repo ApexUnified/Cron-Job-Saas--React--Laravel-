@@ -33,7 +33,7 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $request->user(),
+                'user' => $request->user()  ? $request->user()->append(["user_avatar", "subscription_plan"]) : null,
                 'notifications' => $request->user() ? $request->user()->notifications()->orderBy("created_at", "DESC")->limit(5)->get()->map(function ($notification) {
                     $notification->human_created_at = $notification->created_at->diffForHumans();
                     return $notification;

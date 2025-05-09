@@ -1,13 +1,38 @@
 import { Link, router, usePage } from '@inertiajs/react';
-import React, { useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import Swal from 'sweetalert2';
+import debounce from 'lodash/debounce';
+import { toast } from 'react-toastify';
+
 
 export default function PartialIndex() {
 
     const { users } = usePage().props;
     const { auth } = usePage().props;
     const [selectedIds, setSelectedIds] = useState([]);
+    const [query, setQuery] = useState('');
 
+
+    const debouncedSearch = useCallback(
+        debounce((value) => {
+
+            router.get(route('users.index'), { query: value }, {
+                preserveState: true,
+                replace: true,
+                preserveScroll: true,
+            });
+
+        }, 500),
+        []
+    );
+
+
+    useEffect(() => {
+        if (users.data.length < 1) {
+            toast.info('No Users Found');
+        }
+
+    }, [users]);
 
 
     const handleDelete = (id) => {
@@ -151,10 +176,34 @@ export default function PartialIndex() {
 
 
 
+
+
             <div className="row">
                 <div className="col-12">
                     <div className="card mb-4">
                         <div className="card-body px-0 pt-0 pb-2">
+
+
+
+
+                            <div className="d-flex justify-content-center flex-wrap">
+                                <div className="mb-3">
+                                    <label htmlFor="query" className="form-label"></label>
+                                    <input type="search"
+                                        className='form-control'
+                                        placeholder='Search User'
+                                        id='query'
+                                        value={query}
+                                        onChange={(e) => {
+                                            setQuery(e.target.value)
+                                            debouncedSearch(e.target.value)
+                                        }}
+                                        name='query'
+                                    />
+                                </div>
+                            </div>
+
+
 
                             {selectedIds.length > 0 &&
 
@@ -176,6 +225,7 @@ export default function PartialIndex() {
 
                             <div className="table-responsive p-0">
                                 <table className="table align-items-center mb-0 ">
+
                                     <thead className='text-center'>
                                         <tr>
                                             <th>
@@ -210,8 +260,6 @@ export default function PartialIndex() {
                                         </tr>
                                     </thead>
                                     <tbody className='text-center'>
-
-
                                         {users.data.map((user) => {
                                             return (
 
@@ -253,8 +301,9 @@ export default function PartialIndex() {
 
                                                     </td>
 
+
                                                     <td className='align-middle'>
-                                                        {user.name.substring(0, 15) + "...."}
+                                                        {user.name.length > 18 ? user.name.substring(0, 18) + "...." : user.name}
                                                     </td>
 
                                                     <td className='align-middle'>

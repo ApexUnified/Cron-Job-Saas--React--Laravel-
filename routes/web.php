@@ -4,7 +4,9 @@ use App\Http\Controllers\CronJobController;
 use App\Http\Controllers\CronJobHistoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\SubscriptionPlanController;
 use App\Http\Controllers\UserController;
+use App\Models\SubscriptionPlan;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect("/", "/dashboard");
@@ -39,6 +41,15 @@ Route::middleware(["auth", "verified"])->group(function () {
     Route::put("/user-change-password/{id}", [UserController::class, "updatePassword"])->name("users.update-password");
 
 
+
+
+    // Subscription Plans Routes
+    Route::resource("/subscription-plans", SubscriptionPlanController::class)->except(["show"]);
+    Route::delete("/subscription-plans-deletebyselection", [SubscriptionPlanController::class, "deleteBySelection"])->name("subscription-plans.deletebyselection");
+    Route::put("/subscription-plans-disablebyselection", [SubscriptionPlanController::class, "disableBySelection"])->name("subscription-plans.disablebyselection");
+    Route::put("/subscription-plans-enablebyselection", [SubscriptionPlanController::class, "enableBySelection"])->name("subscription-plans.enablebyselection");
+
+
     // Settings Routes
 
     Route::prefix("/settings")->controller(SettingController::class)->group(function () {
@@ -64,6 +75,11 @@ Route::middleware(["auth", "verified"])->group(function () {
         Route::get("/permissions-create", "permissionCreate")->name("settings.permission.create");
         Route::post("/permissions/create", "permissionStore")->name("settings.permission.store");
         Route::put("/permissions-assign/{id}", "permissionAssign")->name("settings.permission.assign");
+
+
+
+        // Subscription Plans
+        Route::get("/subscription-plans", "subscriptionPlans")->name("settings.subscription-plans");
     });
 });
 

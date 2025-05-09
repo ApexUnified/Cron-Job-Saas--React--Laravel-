@@ -6,6 +6,8 @@ import CurvedImage from "../../../assets/img/curved-images/curved9.jpg"
 export default function Sidebar() {
 
     const { post, processing } = useForm({});
+    const { auth } = usePage().props;
+
 
     useEffect(() => {
         if (window.innerWidth < 768) {
@@ -28,7 +30,7 @@ export default function Sidebar() {
                         <li className="nav-item mt-4">
                             <Link className={route().current("dashboard") ? "nav-link bg-dark rounded text-light" : "nav-link"} href={route("dashboard")}>
                                 <div className="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                                    <i className="bi bi-house-door-fill fs-5 text-dark"></i>
+                                    <i className="bi bi-house-door fs-5 text-dark"></i>
                                 </div>
                                 <span className="nav-link-text ms-1">Dashboard</span>
                             </Link>
@@ -38,7 +40,7 @@ export default function Sidebar() {
                         <li className="nav-item mt-4">
                             <Link className={route().current("cron-jobs.*") ? "nav-link bg-dark rounded text-light" : (route().current("cron-job-history.*") ? "nav-link bg-dark rounded text-light" : "nav-link")} href={route("cron-jobs.index")}>
                                 <div className="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                                    <i className="bi bi-stopwatch-fill fs-5 text-dark"></i>
+                                    <i className="bi bi-stopwatch fs-5 text-dark"></i>
                                 </div>
                                 <span className="nav-link-text ms-1">Cron Jobs</span>
                             </Link>
@@ -49,11 +51,32 @@ export default function Sidebar() {
                         <li className="nav-item mt-4">
                             <Link className={route().current("users.*") ? "nav-link bg-dark rounded text-light" : "nav-link"} href={route("users.index")}>
                                 <div className="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                                    <i className="bi bi-people-fill fs-5 text-dark"></i>
+                                    <i className="bi bi-people fs-5 text-dark"></i>
                                 </div>
                                 <span className="nav-link-text ms-1">Users</span>
                             </Link>
                         </li>
+
+                        <li className="nav-item mt-4">
+                            <Link className={route().current("subscription-plans.*") ? "nav-link bg-dark rounded text-light" : "nav-link"} href={route("subscription-plans.index")}>
+                                <div className="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i className="bi bi-gem fs-5 text-dark"></i>
+                                </div>
+                                <span className="nav-link-text ms-1">Subscription Plans</span>
+                            </Link>
+                        </li>
+
+
+                        <li className="nav-item my-4">
+                            <Link className={route().current("settings.*") ? "nav-link bg-dark rounded text-light" : "nav-link"} href={route("settings.index")}>
+                                <div className="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i className="bi bi-gear fs-5 text-dark"></i>
+                                </div>
+                                <span className="nav-link-text ms-1">Settings</span>
+                            </Link>
+                        </li>
+
+
 
 
 
@@ -63,30 +86,22 @@ export default function Sidebar() {
                 </div>
 
 
-                <div className="sidenav-footer mx-3 mt-7 ">
-                    <div className="card card-background shadow-none card-background-mask-secondary" id="sidenavCard">
-                        <div className="full-background" style={{ backgroundImage: `url(${CurvedImage})` }}>
+                <div className="sidenav-footer mx-3 custom-sidebar-footer-adjustment">
+                    <div className="d-flex align-items-center mb-2">
+                        <div className="rounded-circle bg-dark text-white text-center" style={{ minWidth: "40px", minHeight: "40px", lineHeight: "40px" }}>
+                            {auth.user.user_avatar}
                         </div>
-                        <div className="card-body text-start p-3 w-100">
-                            <div
-                                className="icon icon-shape icon-sm bg-white shadow text-center mb-3 d-flex align-items-center justify-content-center border-radius-md">
-                                <i className="ni ni-diamond text-dark text-gradient text-lg top-0" aria-hidden="true" id="sidenavCardIcon"></i>
+                        <div className="text-truncate mx-1" style={{ lineHeight: "1.2" }}>
+                            <strong style={{ fontSize: "14px" }}>{auth.user.name}</strong>
+                            <div style={{ fontSize: "12px", color: "#6c757d" }}>
+                                {auth.user.email.substring(0, auth.user.email.indexOf("@"))}
                             </div>
-                            <div className="docs-info">
-                                <h6 className="text-white up mb-0">Need help?</h6>
-                                <p className="text-xs font-weight-bold">Please check our docs</p>
-                                <a target="_blank"
-                                    className="btn btn-dark btn-sm w-100 mb-0">Documentation</a>
+                            <div style={{ fontSize: "12px", color: "#6c757d" }}>
+                                Plan: <span className="fw-semibold text-dark">{auth.user.subscription_plan || 'Free'}</span>
                             </div>
                         </div>
                     </div>
-                    <Link className="btn btn-primary mt-3 w-100"
-                        href={route("settings.index")}>
 
-                        <i className='bi bi-gear mx-1'></i>
-                        Settings
-
-                    </Link>
 
                     <SpinnerButton
                         Action={logout}
@@ -95,7 +110,6 @@ export default function Sidebar() {
                         ButtonText={"Logout"}
                         Type={"submit"}
                         ButtonIcon={<i className='bi bi-box-arrow-right mx-1'></i>}
-
                     />
                 </div>
 

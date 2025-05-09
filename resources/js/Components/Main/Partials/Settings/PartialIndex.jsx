@@ -65,7 +65,7 @@ export default function PartialIndex() {
                                             <div className="bg-info rounded-circle d-flex align-items-center justify-content-center mb-3" style={{ width: "60px", height: "60px" }}>
                                                 <i className="bi bi-card-checklist text-white fs-3"></i>
                                             </div>
-                                            <Link className="btn btn-sm btn-info text-dark">Manage Subscriptions</Link>
+                                            <Link href={route("settings.subscription-plans")} className="btn btn-sm btn-info text-dark">Manage Subscriptions</Link>
                                             <p className="text-center text-muted mb-0">View and manage your active subscriptions and billing</p>
                                         </div>
                                     </div>

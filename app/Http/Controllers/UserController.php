@@ -10,15 +10,35 @@ use Spatie\Permission\Models\Role;
 class UserController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::latest()->paginate(5);
 
+        $request->validate([
+            "query" => "nullable|string"
+        ]);
+
+        $usersQuery = User::query()->latest();
+
+        if ($request->has("query")) {
+            $search = strtolower($request->input("query"));
+
+            $usersQuery->where("name", "like", "%" . $search . "%")
+                ->orWhere("email", "like", "%" . $search . "%")
+                ->orWhereHas("roles", function ($role) use ($search) {
+                    $role->where("name", "like", "%" . $search . "%");
+                });
+        }
+
+
+
+        $users =  $usersQuery->paginate(5);
         $users->getCollection()->transform(function ($user) {
             $user->added_at = $user->created_at->diffForHumans();
             $user->role_name =  $user?->roles?->pluck("name")?->implode(",");
             return $user;
         });
+
+
 
         return Inertia::render("Users/index", compact("users"));
     }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\SmtpSetting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -234,5 +235,15 @@ class SettingController extends Controller
         } else {
             return back()->with("error", "Something went wrong");
         }
+    }
+
+
+
+
+    public function subscriptionPlans()
+    {
+
+
+        return Inertia::render("Settings/SubscriptionPlans/index");
     }
 }

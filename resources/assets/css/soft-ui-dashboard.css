@@ -28107,3 +28107,17 @@ pre[className*=language-] {
   transform: rotate(360deg);
   scale: 1;
 }
+
+.custom-sidebar-footer-adjustment {
+  /* Default behavior for mobile: no absolute positioning */
+  position: static;
+  width: 85%;
+}
+
+@media (min-width: 992px) {
+  .custom-sidebar-footer-adjustment {
+    position: absolute;
+    bottom: 0;
+    width: 85%;
+  }
+}

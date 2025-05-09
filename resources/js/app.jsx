@@ -15,6 +15,7 @@ import "../assets/js/core/bootstrap.min.js";
 
 
 
+
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 createInertiaApp({

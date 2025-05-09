@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -49,7 +50,19 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
+    public function getUserAvatarAttribute()
+    {
+        $nameParts = explode(" ", $this->name);
+        return collect($nameParts[0])->map(fn($part) => strtoupper(substr($part, 0, 1)))->implode('');
+    }
 
+
+
+    // Will Modify Accouring To SubscriptionPlan When Plans Will Be Added And Subscriptions Will BE Assigned To User
+    public function getSubscriptionPlanAttribute()
+    {
+        return "Free";
+    }
 
 
     public function cronJobs(): HasMany

@@ -24,7 +24,7 @@ export default function PartialDashboard() {
                                     <div className="row">
                                         <div className="col-8 text-start">
                                             <div className="icon icon-shape bg-white shadow text-center border-radius-2xl">
-                                                <i class="bi bi-emoji-wink-fill text-dark fs-5"></i>
+                                                <i class="bi bi-emoji-wink text-dark fs-5"></i>
                                             </div>
                                             <h5 className="text-white font-weight-bolder mb-0 mt-3">
                                                 {total_jobs}
@@ -43,7 +43,7 @@ export default function PartialDashboard() {
                                     <div className="row">
                                         <div className="col-8 text-start">
                                             <div className="icon icon-shape bg-white shadow text-center border-radius-2xl">
-                                                <i class="bi bi-emoji-heart-eyes-fill text-dark fs-5"></i>
+                                                <i class="bi bi-emoji-heart-eyes text-dark fs-5"></i>
                                             </div>
                                             <h5 className="text-dark font-weight-bolder mb-0 mt-3">
                                                 {success_jobs}
@@ -63,7 +63,7 @@ export default function PartialDashboard() {
                                     <div className="row">
                                         <div className="col-8 text-start">
                                             <div className="icon icon-shape bg-white shadow text-center border-radius-2xl">
-                                                <i class="bi bi-emoji-dizzy-fill text-dark fs-5"></i>
+                                                <i class="bi bi-emoji-dizzy text-dark fs-5"></i>
                                             </div>
                                             <h5 className="text-white font-weight-bolder mb-0 mt-3">
                                                 {failed_jobs}

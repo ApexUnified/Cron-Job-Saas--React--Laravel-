@@ -5,7 +5,7 @@ And Also Subscribe From There And Also Its Table Will be Added On DATABASE NAMED
 
 2) Subscriptions Module For Admin Where All Subscriptioned Users Will Show 
 
-3) Filtering Will Be Add In User Module
+3) Filtering Will Be Add In User Module (✅)
 
 4) Application Setting Module Will Be Made On Settings Module
 
@@ -14,6 +14,8 @@ And Also Subscribe From There And Also Its Table Will be Added On DATABASE NAMED
 6) Roles Assigning Completed And Permission Creation and assigning also Comepleted Just Remeaning Protecting Routes and controllers and main Frontend 
 
 7) In The End Full Strict Checking And Modifications If (Needed)
+
+8) Restrict Disabled User To Use Service and Vsit Dashboard
 
 
 
