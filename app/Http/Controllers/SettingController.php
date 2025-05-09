@@ -77,8 +77,14 @@ class SettingController extends Controller
             "name" => "required|string|max:20"
         ]);
 
+        $role = Role::updateOrCreate(
+            [
+                "name" => $validated_req["name"]
+            ],
+            $validated_req
+        );
 
-        if (Role::create($validated_req)) {
+        if ($role) {
             return redirect()->route("settings.role.index")->with("success", "Role Created Successfully");
         } else {
             return back()->with("error", "Something went wrong");
