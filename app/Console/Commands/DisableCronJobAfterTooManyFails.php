@@ -38,12 +38,27 @@ class DisableCronJobAfterTooManyFails extends Command
             ->chunk(100, function ($cronJobs) {
                 $now = Carbon::now();
                 foreach ($cronJobs as $cronJob) {
+
+                    if ($cronJob->user->is_enabled == 0) {
+                        continue;
+                    }
+
+
                     $disabled_at = Carbon::parse($cronJob->disabled_at);
+
+                    $user_subscription = $cronJob->user->subscription()->where("is_active", 1)->where("status", "Active")->first();
+
+                    if (empty($user_subscription)) {
+                        continue;
+                    }
+
+
+                    $user_subscription_plan = $user_subscription->subscriptionPlan;
 
                     if (
                         empty($cronJob->disabled_at) && $cronJob->cronJobsHistory
                         ->where("status", "failed")
-                        ->count() >= 10
+                        ->count() >= $user_subscription_plan->max_job_failed_before_disable
                     ) {
                         $cronJob->user->notify(new CronJobDisabledNotification($cronJob));
                         $cronJob->is_enabled = false;

@@ -71,7 +71,7 @@ export default function Partialcreate() {
                                     processing={processing}
                                     CssClass={"btn btn-dark"}
                                     ButtonText={"Create Permission"}
-                                    ButtonIcon={<i className='bi bi-plus-square mx-2'></i>}
+                                    ButtonIcon={<i className="bi bi-save mx-1"></i>}
                                     Type={"submit"}
                                 />
                             </form>

@@ -28114,7 +28114,7 @@ pre[className*=language-] {
   width: 85%;
 }
 
-@media (min-width: 992px) {
+@media (min-width: 1500px) {
   .custom-sidebar-footer-adjustment {
     position: absolute;
     bottom: 0;

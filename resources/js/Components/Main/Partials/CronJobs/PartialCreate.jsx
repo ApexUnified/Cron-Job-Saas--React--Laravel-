@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 
 export default function PartialCreate({ heading }) {
 
-    const { user_id } = usePage().props;
+    const { user_id, } = usePage().props;
     const { data, setData, post, processing, errors } = useForm({
         title: "",
         url: "",
@@ -816,7 +816,7 @@ export default function PartialCreate({ heading }) {
                     <div className="row">
                         <div className="col-md-12">
                             <SpinnerButton
-                                ButtonIcon={<i className="bi bi-plus-square mx-2"></i>}
+                                ButtonIcon={<i className="bi bi-save mx-1"></i>}
                                 ButtonText={"Create Cron Job"}
                                 processing={processing}
                                 Type={"submit"}

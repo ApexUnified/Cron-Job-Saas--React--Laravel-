@@ -6,10 +6,12 @@ use App\Models\CronJob;
 use App\Models\CronJobHistory;
 use App\Notifications\InvalidDomainForCronJob;
 use App\Notifications\NotifyFailedCronJobExecution;
+use App\Notifications\RequestsQuotaCompleted;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
+
 
 class CronJobScheduleRunner extends Command
 {
@@ -32,16 +34,55 @@ class CronJobScheduleRunner extends Command
      */
     public function handle()
     {
+
+
+
         $cronJobsHistory = [];
         CronJob::where("is_enabled", 1)
             ->where("is_schedule_expired", 0)
             ->chunk(100, function ($jobs) {
 
-
-
-
                 foreach ($jobs as $index => $job) {
+
+                    if ($job->user->is_enabled == 0) {
+                        continue;
+                    }
+
+                    if (!empty($job->user?->today_quota_complete)) {
+                        $today_quota = Carbon::parse($job->user->today_quota_complete);
+
+
+                        if ($today_quota->isSameDay(Carbon::today())) {
+                            continue;
+                        }
+
+
+                        $job->user->update(['today_quota_complete' => null]);
+                    }
+
                     $start = microtime(true);
+
+                    $user_subscription = $job->user->subscription()->where("is_active", 1)->where("status", "Active")->first();
+
+                    if (empty($user_subscription)) {
+                        continue;
+                    }
+
+
+                    $user_subscription_plan = $user_subscription->subscriptionPlan;
+
+
+                    $todays_total_requests = CronJobHistory::where("cron_job_id", $job->id)->whereDate("created_at", Carbon::today())->count();
+
+
+                    if ($todays_total_requests >= $user_subscription_plan->request_limit_per_day) {
+                        $job->user->update(["today_quota_complete" => now()]);
+                        $job->user->notify(new RequestsQuotaCompleted($job));
+                        continue;
+                    }
+
+
+
                     $response =  $this->checkCronJobSchedule($job);
 
                     if ($response) {

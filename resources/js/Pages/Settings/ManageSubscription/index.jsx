@@ -1,31 +1,31 @@
-import React from 'react'
-import PartialEdit from '@/Components/Main/Partials/SubscriptionPlans/PartialEdit'
+import PartialIndex from '@/Components/Main/Partials/Settings/ManageSubscription/PartialIndex'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout'
 import { Head } from '@inertiajs/react'
-export default function edit() {
+import React from 'react'
+
+export default function index() {
     return (
         <>
 
             <AuthenticatedLayout
-
                 header={
+
                     <h4 className="font-weight-bolder mb-0">
-                        Edit Subscription Plan
+                        Manage Subscription
                     </h4>
                 }
             >
 
 
 
+
+
                 <Head title='Subscription Plans' />
 
 
-                <PartialEdit />
-
+                <PartialIndex />
 
             </AuthenticatedLayout>
-
-
 
         </>
     )

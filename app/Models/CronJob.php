@@ -26,7 +26,8 @@ class CronJob extends Model
         "is_schedule_expired",
         "schedule_expiry_date",
         "last_execution",
-        "notify_when"
+        "notify_when",
+
     ];
 
 

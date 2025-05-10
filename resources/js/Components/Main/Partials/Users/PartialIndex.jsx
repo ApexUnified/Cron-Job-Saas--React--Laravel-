@@ -126,7 +126,7 @@ export default function PartialIndex() {
                 confirmButtonText: 'Yes, Disable it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    router.put(route('users.disable'), {
+                    router.patch(route('users.disable'), {
                         preserveScroll: true,
                         data: {
                             user_ids: selectedIds
@@ -151,7 +151,7 @@ export default function PartialIndex() {
                 confirmButtonText: 'Yes, Enable it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    router.put(route('users.enable'), {
+                    router.patch(route('users.enable'), {
                         preserveScroll: true,
                         data: {
                             user_ids: selectedIds
@@ -311,13 +311,13 @@ export default function PartialIndex() {
                                                     </td>
 
                                                     <td className='align-middle'>
-                                                        <span className="badge bg-primary">
+                                                        <span className="badge bg-gradient-dark">
                                                             {user.role_name || "No Role Assigned"}
                                                         </span>
                                                     </td>
 
                                                     <td className='align-middle'>
-                                                        <span className={`badge bg-gradient-${user.is_enabled == 1 ? "success opacity-7 text-dark" : "danger"}`}>{user.is_enabled == 1 ? "Enabled" : "Disabled"}</span>
+                                                        <span className={`badge bg-gradient-${user.is_enabled == 1 ? "dark" : "danger"}`}>{user.is_enabled == 1 ? "Enabled" : "Disabled"}</span>
                                                     </td>
 
                                                     <td className='align-middle'>

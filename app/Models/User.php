@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
@@ -24,7 +25,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
-        'is_enabled'
+        'is_enabled',
+        'today_quota_complete'
     ];
 
     /**
@@ -59,14 +61,20 @@ class User extends Authenticatable implements MustVerifyEmail
 
 
     // Will Modify Accouring To SubscriptionPlan When Plans Will Be Added And Subscriptions Will BE Assigned To User
-    public function getSubscriptionPlanAttribute()
+    public function getSubscriptionPlanNameAttribute()
     {
-        return "Free";
+        return $this->subscription?->subscriptionPlan?->name;
     }
 
 
     public function cronJobs(): HasMany
     {
         return $this->hasMany(CronJob::class, "user_id", "id");
+    }
+
+
+    public function subscription(): HasOne
+    {
+        return $this->hasOne(Subscription::class, "user_id", "id");
     }
 }

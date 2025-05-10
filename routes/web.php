@@ -4,7 +4,9 @@ use App\Http\Controllers\CronJobController;
 use App\Http\Controllers\CronJobHistoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\SubscriptionPlanController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserController;
 use App\Models\SubscriptionPlan;
 use Illuminate\Support\Facades\Route;
@@ -35,8 +37,8 @@ Route::middleware(["auth", "verified"])->group(function () {
 
     Route::resource("/users", UserController::class)->except(["show"]);
     Route::delete("/users-deletebyselection", [UserController::class, "deleteBySelection"])->name("users.deletebyselection");
-    Route::put("/users-disable", [UserController::class, "disable"])->name("users.disable");
-    Route::put("/users-enable", [UserController::class, "enable"])->name("users.enable");
+    Route::patch("/users-disable", [UserController::class, "disable"])->name("users.disable");
+    Route::patch("/users-enable", [UserController::class, "enable"])->name("users.enable");
     Route::get("/user-change-password/{id}", [UserController::class, "changePassword"])->name("users.change-password");
     Route::put("/user-change-password/{id}", [UserController::class, "updatePassword"])->name("users.update-password");
 
@@ -46,12 +48,24 @@ Route::middleware(["auth", "verified"])->group(function () {
     // Subscription Plans Routes
     Route::resource("/subscription-plans", SubscriptionPlanController::class)->except(["show"]);
     Route::delete("/subscription-plans-deletebyselection", [SubscriptionPlanController::class, "deleteBySelection"])->name("subscription-plans.deletebyselection");
-    Route::put("/subscription-plans-disablebyselection", [SubscriptionPlanController::class, "disableBySelection"])->name("subscription-plans.disablebyselection");
-    Route::put("/subscription-plans-enablebyselection", [SubscriptionPlanController::class, "enableBySelection"])->name("subscription-plans.enablebyselection");
+    Route::patch("/subscription-plans-disablebyselection", [SubscriptionPlanController::class, "disableBySelection"])->name("subscription-plans.disablebyselection");
+    Route::patch("/subscription-plans-enablebyselection", [SubscriptionPlanController::class, "enableBySelection"])->name("subscription-plans.enablebyselection");
 
+
+
+
+    // Subscriptions
+    Route::resource("/subscriptions", SubscriptionController::class)->except(["show"]);
+    Route::delete("/subscriptions-deletebyselection", [SubscriptionController::class, "deleteBySelection"])->name("subscriptions.deletebyselection");
+    Route::patch("/subscriptions-disablebyselection", [SubscriptionController::class, "disableBySelection"])->name("subscriptions.disablebyselection");
+    Route::patch("/subscriptions-enablebyselection", [SubscriptionController::class, "enableBySelection"])->name("subscriptions.enablebyselection");
+
+
+
+    // Transactions
+    Route::get("/transactions", TransactionController::class)->name("transactions.index");
 
     // Settings Routes
-
     Route::prefix("/settings")->controller(SettingController::class)->group(function () {
         Route::get("/", "index")->name("settings.index");
 
@@ -79,7 +93,7 @@ Route::middleware(["auth", "verified"])->group(function () {
 
 
         // Subscription Plans
-        Route::get("/subscription-plans", "subscriptionPlans")->name("settings.subscription-plans");
+        Route::get("/subscription-manage", "subscriptionManage")->name("settings.subscription.manage");
     });
 });
 

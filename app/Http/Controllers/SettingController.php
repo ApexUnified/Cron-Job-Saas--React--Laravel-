@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\SmtpSetting;
+use App\Models\SubscriptionPlan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -246,10 +247,14 @@ class SettingController extends Controller
 
 
 
-    public function subscriptionPlans()
+    public function subscriptionManage()
     {
+        $subscriptionPlans = SubscriptionPlan::where("is_active", 1)->get()->map(function ($plan) {
+            $plan->description = json_decode($plan->description);
+            return $plan;
+        });
 
 
-        return Inertia::render("Settings/SubscriptionPlans/index");
+        return Inertia::render("Settings/ManageSubscription/index", compact("subscriptionPlans"));
     }
 }

@@ -17,13 +17,15 @@ export default function PartialCreate() {
             questions: {},
             answers: {}
         },
+        max_cron_jobs: "",
+        max_job_failed_before_disable: "",
         is_active: true,
         request_limit_per_day: "",
         premium_customer_support: false
 
     });
 
-    console.log(errors);
+
 
     const [description_dds, setDescription_dds] = useState([{ questions: '', answers: '' }]);
 
@@ -198,8 +200,8 @@ export default function PartialCreate() {
                                         <div className="mb-3">
                                             <label htmlFor="premium_customer_support">Premium Customer Support</label>
                                             <select name="premium_customer_support" onChange={(e) => setData('premium_customer_support', e.target.value)} value={data.premium_customer_support} className="form-control" id="">
-                                                <option value={false}>No</option>
-                                                <option value={true}>Yes</option>
+                                                <option value={0}>No</option>
+                                                <option value={1}>Yes</option>
                                             </select>
 
                                             <span className="text-danger fw-bold">{errors.premium_customer_support}</span>
@@ -208,13 +210,58 @@ export default function PartialCreate() {
                                 </div>
 
                                 <div className="row">
+                                    <div className="col-md-6">
+                                        <div className="mb-3">
+                                            <label htmlFor="max_cron_jobs">Max Cron Jobs</label>
+                                            <input type="number"
+                                                min={0}
+                                                id='max_cron_jobs'
+                                                className='form-control'
+                                                placeholder='Max Cron Jobs'
+                                                onChange={(e) => setData('max_cron_jobs', e.target.value)}
+                                                value={data.max_cron_jobs}
+                                                name='max_cron_jobs'
+                                            />
+
+                                            <span className="text-danger fw-bold">{errors.max_cron_jobs}</span>
+                                        </div>
+                                    </div>
+
+
+                                    <div className="col-md-6">
+                                        <div className="mb-3">
+                                            <label htmlFor="max_job_failed_before_disable">Max Job Failed Before Disable</label>
+                                            <input type="number"
+                                                min={0}
+                                                id='max_job_failed_before_disable'
+                                                className='form-control'
+                                                placeholder='Max Failed Job Before Disable'
+                                                onChange={(e) => setData('max_job_failed_before_disable', e.target.value)}
+                                                value={data.max_job_failed_before_disable}
+                                                name='max_job_failed_before_disable'
+                                            />
+
+                                            <span className="text-danger fw-bold">{errors.max_job_failed_before_disable}</span>
+                                        </div>
+                                    </div>
+
+
+
+                                </div>
+
+                                <div className="row">
 
                                     <div className="col-md-6">
                                         <div className="mb-3">
                                             <label htmlFor="is_active">Status</label>
-                                            <select name="is_active" onChange={(e) => setData('is_active', e.target.value)} value={data.is_active} className="form-control" id="">
-                                                <option value={true}>Yes</option>
-                                                <option value={false}>No</option>
+                                            <select name="is_active"
+                                                onChange={(e) => setData('is_active', e.target.value)}
+                                                value={data.is_active}
+                                                className="form-control choices"
+                                                id="is_active"
+                                            >
+                                                <option value={1}>Enable</option>
+                                                <option value={0}>Disable</option>
                                             </select>
 
                                             <span className="text-danger fw-bold">{errors.is_active}</span>
@@ -225,7 +272,7 @@ export default function PartialCreate() {
 
                                 <SpinnerButton
                                     ButtonText={"Create Plan"}
-                                    ButtonIcon={<i className="bi bi-plus-square mx-2"></i>}
+                                    ButtonIcon={<i className="bi bi-save mx-1"></i>}
                                     Type={"submit"}
                                     processing={processing}
                                     CssClass={"btn btn-dark"}

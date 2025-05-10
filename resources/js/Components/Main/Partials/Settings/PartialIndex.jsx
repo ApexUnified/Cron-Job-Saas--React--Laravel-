@@ -33,6 +33,33 @@ export default function PartialIndex() {
                                     </div>
                                 </div>
 
+
+
+
+                                <div className="col-md-6 mb-4">
+                                    <div className="card shadow-lg border-0 rounded-3 h-100">
+                                        <div className="card-header bg-info bg-gradient text-white py-3">
+                                            <h5 className="mb-0 d-flex align-items-center">
+                                                <i className="bi bi-card-checklist me-2"></i>
+                                                Subscriptions
+                                            </h5>
+                                        </div>
+                                        <div className="card-body d-flex flex-column align-items-center justify-content-center p-4">
+                                            <div className="bg-info rounded-circle d-flex align-items-center justify-content-center mb-3" style={{ width: "60px", height: "60px" }}>
+                                                <i className="bi bi-card-checklist text-white fs-3"></i>
+                                            </div>
+                                            <Link href={route("settings.subscription.manage")} className="btn btn-sm btn-info text-dark">Manage Subscriptions</Link>
+                                            <p className="text-center text-muted mb-0">View and manage your active subscriptions and billing</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+                            </div>
+
+                            <div className="row my-4">
                                 <div className="col-md-6 mb-4">
                                     <div className="card shadow-lg border-0 rounded-3 h-100">
                                         <div className="card-header bg-success bg-gradient text-white py-3">
@@ -47,26 +74,6 @@ export default function PartialIndex() {
                                             </div>
                                             <Link className="btn btn-sm btn-success text-dark" href={route("settings.smtp.index")}>Manage SMTP Setting</Link>
                                             <p className="text-center text-muted mb-0">Manage your email notifications and communication preferences</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="row my-4">
-                                <div className="col-md-6 mb-4">
-                                    <div className="card shadow-lg border-0 rounded-3 h-100">
-                                        <div className="card-header bg-info bg-gradient text-white py-3">
-                                            <h5 className="mb-0 d-flex align-items-center">
-                                                <i className="bi bi-card-checklist me-2"></i>
-                                                Subscriptions
-                                            </h5>
-                                        </div>
-                                        <div className="card-body d-flex flex-column align-items-center justify-content-center p-4">
-                                            <div className="bg-info rounded-circle d-flex align-items-center justify-content-center mb-3" style={{ width: "60px", height: "60px" }}>
-                                                <i className="bi bi-card-checklist text-white fs-3"></i>
-                                            </div>
-                                            <Link href={route("settings.subscription-plans")} className="btn btn-sm btn-info text-dark">Manage Subscriptions</Link>
-                                            <p className="text-center text-muted mb-0">View and manage your active subscriptions and billing</p>
                                         </div>
                                     </div>
                                 </div>

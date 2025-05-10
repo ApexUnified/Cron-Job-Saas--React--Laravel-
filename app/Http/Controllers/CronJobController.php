@@ -30,12 +30,27 @@ class CronJobController extends Controller
             return $job;
         });
 
+        $cronCount = CronJob::where("user_id", Auth::id())->count();
+        $maxCronJobs = Auth::user()->subscription->subscriptionPlan->max_cron_jobs;
 
-        return Inertia::render("CronJobs/index", compact("cronJobs"));
+        $allowed_cron_job_creation = $cronCount < $maxCronJobs;
+
+
+        return Inertia::render("CronJobs/index", compact("cronJobs", "allowed_cron_job_creation"));
     }
 
     public function create()
     {
+        $cronCount = CronJob::where("user_id", Auth::id())->count();
+        $maxCronJobs = Auth::user()->subscription->subscriptionPlan->max_cron_jobs;
+
+        $allowed_cron_job_creation = $cronCount < $maxCronJobs;
+
+
+        if (!$allowed_cron_job_creation) {
+            return back()->with("error", "You have reached the maximum number of allowed Cron Jobs... Please Upgrade Your Subscription For More Cron Jobs");
+        }
+
         $user_id = Auth::id();
         return Inertia::render("CronJobs/create", compact("user_id"));
     }

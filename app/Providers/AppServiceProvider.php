@@ -39,8 +39,8 @@ class AppServiceProvider extends ServiceProvider
         ]);
 
 
-        $schedule->command(AutoCheckJobScheduleExpiry::class)->everyMinute();
-        $schedule->command(CronJobScheduleRunner::class)->everyMinute();
-        $schedule->command(DisableCronJobAfterTooManyFails::class)->everyThreeHours();
+        $schedule->command(AutoCheckJobScheduleExpiry::class)->everySecond();
+        $schedule->command(CronJobScheduleRunner::class)->everySecond();
+        $schedule->command(DisableCronJobAfterTooManyFails::class)->everySecond();
     }
 }

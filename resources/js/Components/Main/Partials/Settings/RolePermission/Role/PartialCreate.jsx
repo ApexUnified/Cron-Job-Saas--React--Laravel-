@@ -51,7 +51,7 @@ export default function PartialCreate() {
                                     processing={processing}
                                     CssClass={"btn btn-dark my-3"}
                                     ButtonText={"Create Role"}
-                                    ButtonIcon={<i className='bi bi-plus-square mx-2'></i>}
+                                    ButtonIcon={<i className="bi bi-save mx-1"></i>}
                                     Type={"submit"}
                                 />
                             </form>

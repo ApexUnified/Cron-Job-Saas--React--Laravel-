@@ -113,7 +113,7 @@ export default function PartialCreate() {
                                             <label htmlFor="role" className="form-label">User Roles</label>
                                             <select name="role"
                                                 id="role"
-                                                className='form-control'
+                                                className='form-control choices'
                                                 value={data.role}
                                                 onChange={(e) => setData('role', e.target.value)}
 
@@ -139,7 +139,7 @@ export default function PartialCreate() {
                                     processing={processing}
                                     CssClass={"btn btn-dark my-3"}
                                     ButtonText={"Create User"}
-                                    ButtonIcon={<i className='bi bi-plus-square mx-2'></i>}
+                                    ButtonIcon={<i className="bi bi-save mx-1"></i>}
                                     Type={"submit"}
                                 />
                             </form>

@@ -1,4 +1,4 @@
-import PartialIndex from '@/Components/Main/Partials/Settings/SubscriptionPlans/PartialIndex'
+import PartialIndex from '@/Components/Main/Partials/Subscriptions/PartialIndex'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout'
 import { Head } from '@inertiajs/react'
 import React from 'react'
@@ -9,21 +9,17 @@ export default function index() {
 
             <AuthenticatedLayout
                 header={
-
                     <h4 className="font-weight-bolder mb-0">
-                        Subscription Plans
+                        Subscriptions
                     </h4>
                 }
             >
 
-
-
-
-
-                <Head title='Subscription Plans' />
+                <Head title='Subscriptions' />
 
 
                 <PartialIndex />
+
 
             </AuthenticatedLayout>
 

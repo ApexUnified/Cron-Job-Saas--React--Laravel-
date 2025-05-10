@@ -67,6 +67,26 @@ export default function Sidebar() {
                         </li>
 
 
+                        <li className="nav-item mt-4">
+                            <Link className={route().current("subscriptions.*") ? "nav-link bg-dark rounded text-light" : "nav-link"} href={route("subscriptions.index")}>
+                                <div className="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i className="bi bi-shield-check fs-5 text-dark"></i>
+                                </div>
+                                <span className="nav-link-text ms-1">Subscriptions</span>
+                            </Link>
+                        </li>
+
+
+                        <li className="nav-item mt-4">
+                            <Link className={route().current("transactions.*") ? "nav-link bg-dark rounded text-light" : "nav-link"} href={route("transactions.index")}>
+                                <div className="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                                    <i className="bi bi-bank fs-5 text-dark"></i>
+                                </div>
+                                <span className="nav-link-text ms-1">Transactions</span>
+                            </Link>
+                        </li>
+
+
                         <li className="nav-item my-4">
                             <Link className={route().current("settings.*") ? "nav-link bg-dark rounded text-light" : "nav-link"} href={route("settings.index")}>
                                 <div className="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -97,7 +117,7 @@ export default function Sidebar() {
                                 {auth.user.email.substring(0, auth.user.email.indexOf("@"))}
                             </div>
                             <div style={{ fontSize: "12px", color: "#6c757d" }}>
-                                Plan: <span className="fw-semibold text-dark">{auth.user.subscription_plan || 'Free'}</span>
+                                Plan: <span className="fw-semibold text-dark">{auth.user.subscription_plan_name || 'No Plan'}</span>
                             </div>
                         </div>
                     </div>

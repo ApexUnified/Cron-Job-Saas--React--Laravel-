@@ -39,6 +39,8 @@ class SubscriptionPlanController extends Controller
                 'price' => 'required|numeric',
                 'request_limit_per_day' => 'required|numeric',
                 'premium_customer_support' => 'nullable|boolean',
+                'max_cron_jobs' => 'required|numeric',
+                'max_job_failed_before_disable' => 'required|numeric',
                 'description.*' => 'required',
                 'is_active' => 'nullable|boolean',
             ],
@@ -87,6 +89,9 @@ class SubscriptionPlanController extends Controller
         if (empty($subscriptionPlan)) {
             return redirect()->route("subscription-plans.index")->with("error", "Something went wrong While Finding Subscription Plan");
         }
+
+        $subscriptionPlan->description = json_decode($subscriptionPlan->description);
+
         return Inertia::render("SubscriptionPlans/edit", compact("subscriptionPlan"));
     }
 
@@ -99,8 +104,11 @@ class SubscriptionPlanController extends Controller
                 'price' => 'required|numeric',
                 'request_limit_per_day' => 'required|numeric',
                 'premium_customer_support' => 'nullable|boolean',
+                'max_cron_jobs' => 'required|numeric',
+                'max_job_failed_before_disable' => 'required|numeric',
                 'description.*' => 'required',
                 'is_active' => 'nullable|boolean',
+
             ],
             [
                 'description.questions' => "Questions Are Required Atleast Add One Question For Subscription Plan",
@@ -124,7 +132,7 @@ class SubscriptionPlanController extends Controller
         $validated_req["description"] = $encoded_description;
 
         if (SubscriptionPlan::find($id)->update($validated_req)) {
-            return back()->with("success", "Subscription Plan Updated Successfully");
+            return redirect()->route("subscription-plans.index")->with("success", "Subscription Plan Updated Successfully");
         } else {
             return back()->with("error", "Something went wrong While Updating Subscription Plan");
         }

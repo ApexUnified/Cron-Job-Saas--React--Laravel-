@@ -1,21 +1,25 @@
-TODO For Tomorrow:
+TODO For System:
 
-1) Subscription Module In Settings Will Be Made For Everyone Where I WIll Show All Subscription Packages And User Will See His Subscription From There 
-And Also Subscribe From There And Also Its Table Will be Added On DATABASE NAMED: subscriptions (All Subscription Data Like Requests, and other things will be mentioned there)
 
-2) Subscriptions Module For Admin Where All Subscriptioned Users Will Show 
+*) Auto Subscription Expired but give 2 to 4 days grace perioud before Expire And Also Make Logic For User to subscribe them self and payment gateways will be integrate
 
-3) Filtering Will Be Add In User Module (✅)
+*) Transactions Module Will be Made
 
-4) Application Setting Module Will Be Made On Settings Module
+*) Application Setting Module Will Be Made On Settings Module
 
-5) Statics Module Will Be Made Where All Requests Of System Show For Everyone
+*) User Status Checking And  Restrict Disabled User To Use Service and Vsit Dashboard
 
-6) Roles Assigning Completed And Permission Creation and assigning also Comepleted Just Remeaning Protecting Routes and controllers and main Frontend 
+*) Subcription Subscribe For User To Subscribe It Self In Settings/ManageSubscription Module
 
-7) In The End Full Strict Checking And Modifications If (Needed)
 
-8) Restrict Disabled User To Use Service and Vsit Dashboard
+*) Statics Module Will Be Made Where All Requests Of System Show For Everyone
+
+*) Roles Assigning Completed And Permission Creation and assigning also Comepleted Just Remeaning Protecting Routes and controllers and main Frontend 
+
+*) In The End Full Strict Checking And Modifications If (Needed)
+
+*) In Register Form Of Guest Role Assigning And Free Subscription Plan Assigning 
+
 
 
 

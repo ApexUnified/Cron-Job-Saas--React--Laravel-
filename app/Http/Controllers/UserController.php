@@ -50,13 +50,16 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        $validated_req = $request->validate([
-            "name" => "required|string",
-            "email" => "required|string|email|unique:users,email",
-            "password" => "required|string",
-            "password_confirmation" => "required|string|same:password",
-            "role" => "required|exists:roles,name"
-        ]);
+        $validated_req = $request->validate(
+            [
+                "name" => "required|string",
+                "email" => "required|string|email|unique:users,email",
+                "password" => "required|string",
+                "password_confirmation" => "required|string|same:password",
+                "role" => "required|exists:roles,name"
+            ],
+
+        );
 
         $validated_req["password"] = bcrypt($validated_req["password"]);
 
@@ -104,13 +107,18 @@ class UserController extends Controller
             return back()->with("error", "Something went wrong While Updating User");
         }
 
-        $validated_req = $request->validate([
-            "name" => "required|string",
-            "email" => "required|string|email|unique:users,email," . $id,
-            "role" => "required|exists:roles,name",
-            "is_enabled" => "required|boolean",
+        $validated_req = $request->validate(
+            [
+                "name" => "required|string",
+                "email" => "required|string|email|unique:users,email," . $id,
+                "role" => "required|exists:roles,name",
+                "is_enabled" => "required|boolean",
 
-        ]);
+            ],
+            [
+                'is_enabled.required' => 'User Status is Required',
+            ]
+        );
 
         unset($validated_req["role"]);
 

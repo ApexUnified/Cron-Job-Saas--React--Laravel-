@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string("name");
             $table->decimal("price", 20, 2);
             $table->integer("request_limit_per_day");
+            $table->integer("max_cron_jobs");
+            $table->integer("max_job_failed_before_disable");
             $table->boolean("premium_customer_support")->default(false);
             $table->longText("description");
             $table->boolean("is_active")->default(true);

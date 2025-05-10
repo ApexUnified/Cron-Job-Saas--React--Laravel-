@@ -33,12 +33,17 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $request->user()  ? $request->user()->append(["user_avatar", "subscription_plan"]) : null,
+                'user' => $request->user()  ? $request->user()->append(["user_avatar", "subscription_plan_name"]) : null,
                 'notifications' => $request->user() ? $request->user()->notifications()->orderBy("created_at", "DESC")->limit(5)->get()->map(function ($notification) {
                     $notification->human_created_at = $notification->created_at->diffForHumans();
                     return $notification;
-                }) : []
+                }) : [],
+                'hasRole' => $request->user()->roles()->pluck("name")->toArray(),
+                'can' => $request->user()->getAllPermissions()->pluck("name")->toArray(),
             ],
+
+            "is_quota_completed" =>  $request->user()->today_quota_complete ?
+                Carbon::parse($request->user()->today_quota_complete)->isSameDay(Carbon::today()) : false
         ];
     }
 }

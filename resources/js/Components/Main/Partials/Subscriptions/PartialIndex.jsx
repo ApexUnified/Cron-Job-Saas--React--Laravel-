@@ -1,19 +1,15 @@
 import { Link, router, useForm, usePage } from '@inertiajs/react'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Swal from 'sweetalert2';
-export default function PartialIndex({ heading }) {
 
-    const { cronJobs, allowed_cron_job_creation } = usePage().props;
+export default function PartialIndex() {
+    const { subscriptions } = usePage().props;
 
-    console.log(allowed_cron_job_creation);
-    const { post, processing } = useForm({});
     const [selectedIds, setSelectedIds] = useState([]);
 
-
-    const ConfirmableToast = (id) => {
-
+    const handleDelete = (id) => {
         Swal.fire({
-            title: 'Are you sure You Want To Delete This Cron Job?',
+            title: 'Are you sure You Want To Delete This Subscription?',
             text: "You won't be able to revert this!",
             icon: 'warning',
             showCancelButton: true,
@@ -22,26 +18,17 @@ export default function PartialIndex({ heading }) {
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                handleDelete(id);
-            }
-        })
-    }
-
-
-    const handleDelete = (id) => {
-        post(route('cron-jobs.destroy', id), {
-            headers: {
-                'X-HTTP-Method-Override': 'DELETE'
+                router.delete(route('subscriptions.destroy', id));
             }
         });
     }
 
 
     const selectAllJobs = () => {
-        const allSelectedjobs = document.querySelectorAll(".cron-job-select");
+        const allSelectedjobs = document.querySelectorAll(".subscription-select");
         const ids = [];
         allSelectedjobs.forEach((el) => {
-            el.checked = document.getElementById("cron_job_select_all").checked;
+            el.checked = document.getElementById("subscription_select_all").checked;
             if (el.checked) {
                 ids.push(el.value);
             }
@@ -51,8 +38,8 @@ export default function PartialIndex({ heading }) {
     }
 
     const unSelectAfterAction = () => {
-        const allSelectedjobs = document.querySelectorAll(".cron-job-select");
-        const parentcheckBox = document.getElementById("cron_job_select_all").checked = false;
+        const allSelectedjobs = document.querySelectorAll(".subscription-select");
+        const parentcheckBox = document.getElementById("subscription_select_all").checked = false;
         allSelectedjobs.forEach((el) => {
             el.checked = false;
         });
@@ -74,7 +61,7 @@ export default function PartialIndex({ heading }) {
 
         if (type === "Delete") {
             Swal.fire({
-                title: 'Are you sure You Want To Delete All The Selected Jobs?',
+                title: 'Are you sure You Want To Delete All The Selected Subscriptions?',
                 text: "You won't be able to revert this!",
                 icon: 'warning',
                 showCancelButton: true,
@@ -84,10 +71,10 @@ export default function PartialIndex({ heading }) {
             }).then((result) => {
                 if (result.isConfirmed) {
                     unSelectAfterAction();
-                    router.delete(route('cron-jobs.deletebyselection'), {
+                    router.delete(route('subscriptions.deletebyselection'), {
                         preserveScroll: true,
                         data: {
-                            cron_job_ids: selectedIds
+                            subscription_ids: selectedIds
                         }
                     });
                 }
@@ -96,7 +83,7 @@ export default function PartialIndex({ heading }) {
 
         if (type === "Disable") {
             Swal.fire({
-                title: 'Are you sure You Want To Disable All The Selected Jobs?',
+                title: 'Are you sure You Want To Disable All The Selected Subscriptions?',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#222',
@@ -105,10 +92,10 @@ export default function PartialIndex({ heading }) {
             }).then((result) => {
                 if (result.isConfirmed) {
                     unSelectAfterAction();
-                    router.patch(route('cron-jobs.disablebyselection'), {
+                    router.patch(route('subscriptions.disablebyselection'), {
                         preserveScroll: true,
                         data: {
-                            cron_job_ids: selectedIds
+                            subscription_ids: selectedIds
                         }
                     });
                 }
@@ -116,7 +103,7 @@ export default function PartialIndex({ heading }) {
         }
         if (type === "Enable") {
             Swal.fire({
-                title: 'Are you sure You Want To Enable All The Selected Jobs?',
+                title: 'Are you sure You Want To Enable All The Selected Subscriptions?',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#222',
@@ -125,51 +112,24 @@ export default function PartialIndex({ heading }) {
             }).then((result) => {
                 if (result.isConfirmed) {
                     unSelectAfterAction();
-                    router.patch(route('cron-jobs.enablebyselection'), {
+                    router.patch(route('subscriptions.enablebyselection'), {
                         preserveScroll: true,
                         data: {
-                            cron_job_ids: selectedIds
+                            subscription_ids: selectedIds
                         }
                     });
                 }
             });
         }
-        if (type === "Copy") {
-            Swal.fire({
-                title: 'Are you sure You Want To Copy All The Selected Jobs?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#222',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, Copy it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    unSelectAfterAction();
-                    router.post(route('cron-jobs.bulk.copy'), {
-                        preserveScroll: true,
-                        data: {
-                            cron_job_ids: selectedIds
-                        }
-                    });
-                }
-            });
-        }
-
-
-
-
 
 
     }
-
     return (
         <>
-
-            <div className="d-flex justify-content-between flex-wrap">
-                <h3>{heading}</h3>
-                <Link href={route('cron-jobs.create')} className={`btn btn-dark ${!allowed_cron_job_creation && "disabled"}`}>
+            <div className="d-flex justify-content-end flex-wrap">
+                <Link href={route('subscriptions.create')} className="btn btn-dark ">
                     <i className="bi bi-plus-square mx-1"></i>
-                    Create Cron Job
+                    Create Subscription
                 </Link>
             </div>
 
@@ -188,21 +148,20 @@ export default function PartialIndex({ heading }) {
                                             <li><a className="dropdown-item border-radius-md" onClick={() => handleBulkActions("Delete")}><i className='bi bi-trash text-danger mx-1'></i>Delete </a></li>
                                             <li><a className="dropdown-item border-radius-md" onClick={() => handleBulkActions("Enable")}><i className='bi bi-toggle-on text-success mx-1'></i >Enable</a></li>
                                             <li><a className="dropdown-item border-radius-md" onClick={() => handleBulkActions("Disable")}><i className='bi bi-toggle-off text-primary mx-1'></i>Disable</a></li>
-                                            <li><a className="dropdown-item border-radius-md" onClick={() => handleBulkActions("Copy")}><i className='bi bi-clipboard-check text-primary mx-1'></i>Copy</a></li>
                                         </ul>
                                     </div>
                                 </div>
 
                             }
                             <div className="table-responsive p-0">
-                                <table className="table align-items-center mb-0 text-left">
+                                <table className="table align-items-center mb-0 text-center">
                                     <thead>
                                         <tr>
                                             <th>
 
                                                 <div className="checkbox-container text-center">
-                                                    <label className={`ios-checkbox dark ${cronJobs.data.length == 0 ? 'no-pointer' : ''}`}  >
-                                                        <input type="checkbox" id='cron_job_select_all' onClick={selectAllJobs} />
+                                                    <label className={`ios-checkbox dark ${subscriptions.data.length == 0 ? 'no-pointer' : ''}`}  >
+                                                        <input type="checkbox" id='subscription_select_all' onClick={selectAllJobs} />
                                                         <div className="checkbox-wrapper">
                                                             <div className="checkbox-bg"></div>
                                                             <svg className="checkbox-icon" viewBox="0 0 24 24" fill="none">
@@ -220,28 +179,29 @@ export default function PartialIndex({ heading }) {
                                                 </div>
 
                                             </th>
-                                            <th className="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Title, URL</th>
-                                            <th className="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Last Execution</th>
-                                            <th className="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Method</th>
-                                            <th className="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
+                                            <th className="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">User Name</th>
+                                            <th className="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Plan Name</th>
+                                            <th className="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Subscription Start Date</th>
+                                            <th className="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Subscription End Date</th>
+                                            <th className="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Subscription Status</th>
+                                            <th className="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Subscription Auto Renew</th>
+                                            <th className="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Subscription Active Status</th>
                                             <th className="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
 
-
-
-                                        {cronJobs.data.map((cronJob) => {
+                                        {subscriptions.data.map((subscription) => {
                                             return (
-                                                <tr key={cronJob.id}>
+                                                <tr key={subscription.id}>
                                                     <td>
                                                         <div className="checkbox-container text-center">
                                                             <label className="ios-checkbox red">
                                                                 <input type="checkbox"
-                                                                    className='cron-job-select'
-                                                                    onChange={(e) => selectSingleJob(cronJob.id, e.target.checked)}
-                                                                    name='cronJob_id'
-                                                                    value={cronJob.id} />
+                                                                    className='subscription-select'
+                                                                    onChange={(e) => selectSingleJob(subscription.id, e.target.checked)}
+                                                                    name='subscription_id'
+                                                                    value={subscription.id} />
                                                                 <div className="checkbox-wrapper">
                                                                     <div className="checkbox-bg"></div>
                                                                     <svg className="checkbox-icon" viewBox="0 0 24 24" fill="none">
@@ -260,50 +220,54 @@ export default function PartialIndex({ heading }) {
 
 
                                                     </td>
-                                                    <td>
-                                                        <div className="d-flex px-2 py-1 justify-content-start text-left">
-                                                            <div>
-                                                                <h6 className="mb-0 text-sm">{cronJob.title} </h6>
-                                                                <p> <i className={`bi bi-stopwatch-fill fs-5 mx-2  text-${cronJob.is_schedule_expired ? "danger" : "success"}`}></i><a href={cronJob.url} target="_blank">{cronJob.url.slice(0, 20) + "..."}</a></p>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <p>{cronJob.last_execution || "No Execution Found"}</p>
-                                                        {cronJob.last_execution ? <p>Took <span className='text-primary'>{cronJob.execution_duration}</span> Seconds</p> : ""}
 
-                                                    </td>
                                                     <td className="align-middle">
-                                                        <span className="badge badge-sm bg-gradient-dark text-white">{cronJob.method}</span>
+                                                        {subscription.user.name.length > 15 ? subscription.user.name.substring(0, 15) + "..." : subscription.user.name}
+                                                    </td>
+
+
+
+                                                    <td className="align-middle">
+                                                        <span className="badge bg-gradient-dark">{subscription.subscription_plan.name}</span>
                                                     </td>
 
                                                     <td className="align-middle">
-                                                        <span className={`badge badge-sm bg-gradient-${cronJob.is_enabled ? "dark" : "danger"}`}>{cronJob.is_enabled ? "Enabled" : "Disabled"}</span>
+                                                        {subscription.start_date}
                                                     </td>
+
+                                                    <td className="align-middle">
+                                                        {subscription.end_date}
+                                                    </td>
+
+                                                    <td className="align-middle">
+                                                        <span className={`badge bg-${subscription.status === 'Active' ? 'gradient-dark' : 'danger'}`}>{subscription.status}</span>
+                                                    </td>
+
+                                                    <td className="align-middle">
+                                                        <span className={`badge bg-${subscription.auto_renew == 1 ? 'gradient-dark' : 'danger'}`}>{subscription.auto_renew == 1 ? "Enabled" : "Disabled"}</span>
+                                                    </td>
+
+                                                    <td className="align-middle">
+                                                        <span className={`badge bg-${subscription.is_active == 1 ? 'gradient-dark' : 'danger'}`}>{subscription.is_active == 1 ? "Enabled" : "Disabled"}</span>
+                                                    </td>
+
 
                                                     <td className="align-middle">
 
 
-                                                        <Link href={route('cron-jobs.edit', cronJob.id)}>
+                                                        <Link href={route('subscriptions.edit', subscription.id)}>
                                                             <i className='bi bi-pencil-fill cursor-pointer text-dark fs-5 mx-1'></i>
                                                         </Link>
 
-                                                        <Link href={route('cron-job-history.index', cronJob.id)}>
-                                                            <i className="bi bi-clock-history mx-1 fs-5 cursor-pointer text-dark mx-1"></i>
-                                                        </Link>
 
-                                                        <i className='bi bi-trash-fill cursor-pointer text-dark   rounded fs-5 mx-2' onClick={(() => ConfirmableToast(cronJob.id))}></i>
+
+                                                        <i className='bi bi-trash-fill cursor-pointer text-dark   rounded fs-5 mx-2' onClick={(() => handleDelete(subscription.id))}></i>
 
 
                                                     </td>
                                                 </tr>
                                             )
-
-
-                                        })
-
-
-                                        }
+                                        })}
 
                                     </tbody>
                                 </table>
@@ -313,7 +277,7 @@ export default function PartialIndex({ heading }) {
                             <div className="row mt-4">
                                 <div className="col-md-12 d-flex justify-content-end flex-wrap">
                                     <div className="pagination">
-                                        {cronJobs.links.map((link) => {
+                                        {subscriptions.links.map((link) => {
                                             return (
                                                 <Link preserveScroll key={link.label} className={`btn btn-outline-dark mx-1 ${link.url ? "" : "disabled"} ${link.active ? "active disabled bg-dark text-white" : ""}`}
                                                     href={link.url || ""}>

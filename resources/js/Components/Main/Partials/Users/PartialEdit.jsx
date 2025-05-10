@@ -80,7 +80,7 @@ export default function PartialEdit() {
                                             <label htmlFor="role" className="form-label">User Roles</label>
                                             <select name="role"
                                                 id="role"
-                                                className='form-control'
+                                                className='form-control choices'
                                                 value={data.role}
                                                 onChange={(e) => setData('role', e.target.value)}
 
@@ -94,7 +94,7 @@ export default function PartialEdit() {
 
                                             </select>
 
-                                            <span className="text-danger fw-bold">{errors.password}</span>
+                                            <span className="text-danger fw-bold">{errors.role}</span>
                                         </div>
                                     </div>
 
@@ -104,7 +104,7 @@ export default function PartialEdit() {
                                             <label htmlFor="is_enabled" className="form-label">User Status</label>
                                             <select name="is_enabled"
                                                 id="is_enabled"
-                                                className='form-control'
+                                                className='form-control choices'
                                                 value={data.is_enabled}
                                                 onChange={(e) => setData('is_enabled', e.target.value)}
 
@@ -118,7 +118,7 @@ export default function PartialEdit() {
 
                                             </select>
 
-                                            <span className="text-danger fw-bold">{errors.password}</span>
+                                            <span className="text-danger fw-bold">{errors.is_enabled}</span>
                                         </div>
                                     </div>
 
